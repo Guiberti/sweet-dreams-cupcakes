@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% from "_macros.html" import cupcake %}
+{% block titulo %}{{ produto.nome }} · Sweet Dreams{% endblock %}
+{% block conteudo %}
+<a class="voltar" href="{{ url_for('catalogo.inicio') }}">← Voltar</a>
+<article class="detalhe">
+  <div class="detalhe-img" style="--cor: {{ produto.cor }}">{{ cupcake(produto.cor, 180) }}</div>
+  <p class="categoria">{{ produto.categoria_nome }}</p>
+  <h1>{{ produto.nome }}</h1>
+  <p class="preco grande">{{ produto.preco|moeda }}</p>
+  <p>{{ produto.descricao }}</p>
+  <ul class="ficha">
+    {% if produto.calorias %}<li><b>{{ produto.calorias }}</b> kcal por unidade</li>{% endif %}
+    <li>{% if produto.estoque > 0 %}<b>{{ produto.estoque }}</b> disponíveis hoje{% else %}<b class="txt-erro">Esgotado hoje</b>{% endif %}</li>
+  </ul>
+  {% if produto.estoque > 0 %}
+  <form method="post" action="{{ url_for('carrinho.adicionar', produto_id=produto.id) }}" class="add-carrinho">
+    <div class="qtd" data-max="{{ produto.estoque }}">
+      <button type="button" class="qtd-menos" aria-label="Diminuir quantidade">−</button>
+      <label for="quantidade" class="sr-only">Quantidade</label>
+      <input id="quantidade" name="quantidade" type="number" min="1" max="{{ produto.estoque }}" value="1">
+      <button type="button" class="qtd-mais" aria-label="Aumentar quantidade">+</button>
+    </div>
+    <button class="btn btn-primario">Adicionar ao carrinho</button>
+  </form>
+  {% else %}
+  <button class="btn" disabled>Indisponível</button>
+  {% endif %}
+</article>
+
+{% if relacionados %}
+<h2 class="secao">Você também pode gostar</h2>
+<div class="relacionados">
+  {% for r in relacionados %}
+  <a href="{{ url_for('catalogo.detalhe', produto_id=r.id) }}" class="mini-card">{{ cupcake(r.cor, 56) }}<span>{{ r.nome }}</span><b>{{ r.preco|moeda }}</b></a>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

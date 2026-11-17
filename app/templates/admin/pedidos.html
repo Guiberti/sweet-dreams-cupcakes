@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block titulo %}Pedidos · Admin{% endblock %}
+{% block body_class %}admin{% endblock %}
+{% block conteudo %}
+<h1>Pedidos</h1>
+<nav class="chips" aria-label="Filtrar por status">
+  <a class="chip {{ 'ativo' if not status_atual }}" href="{{ url_for('admin.pedidos') }}">Todos</a>
+  {% for s, r in rotulos.items() %}<a class="chip {{ 'ativo' if status_atual == s }}" href="{{ url_for('admin.pedidos', status=s) }}">{{ r }}</a>{% endfor %}
+</nav>
+<div class="tabela-rolagem">
+<table class="tabela">
+  <thead><tr><th>Pedido</th><th>Data</th><th>Cliente</th><th>Tipo</th><th>Total</th><th>Status</th><th>Entregador</th></tr></thead>
+  <tbody>
+  {% for p in pedidos %}
+  <tr><td><a href="{{ url_for('admin.pedido', pedido_id=p.id) }}">{{ p.numero }}</a></td><td>{{ p.data_criacao|data }}</td>
+    <td>{{ p.cliente_nome }}</td><td>{{ 'Entrega' if p.tipo_entrega == 'ENTREGA' else 'Retirada' }}</td><td>{{ p.valor_total|moeda }}</td>
+    <td><span class="status status-{{ p.status|lower }}">{{ rotulos[p.status] }}</span></td><td>{{ p.entregador_nome or '-' }}</td></tr>
+  {% else %}<tr><td colspan="7" class="muted">Nenhum pedido.</td></tr>{% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

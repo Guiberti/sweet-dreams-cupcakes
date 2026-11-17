@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block titulo %}Laudo de teste · Sweet Dreams{% endblock %}
+{% block conteudo %}
+<h1>Laudo de teste</h1>
+<p class="muted">Obrigado por testar o Sweet Dreams! Conte o que funcionou, o que deu errado e o que você não conseguiu testar. Se encontrar um erro, anexe um print da tela.</p>
+<form method="post" enctype="multipart/form-data" class="caixa formulario" novalidate>
+  <div class="duas-colunas">
+    <div><label for="nome_testador">Seu nome *</label><input id="nome_testador" name="nome_testador" required value="{{ dados.get('nome_testador', '') }}"></div>
+    <div><label for="data_teste">Data do teste *</label><input id="data_teste" name="data_teste" type="date" required value="{{ dados.get('data_teste', hoje) }}"></div>
+  </div>
+  <label for="perfil_testador">Perfil</label>
+  <input id="perfil_testador" name="perfil_testador" placeholder="Ex.: colega de curso, desenvolvedor, cliente de confeitaria..." value="{{ dados.get('perfil_testador', '') }}">
+  <label for="funcionou">✅ O que você testou e FUNCIONOU</label>
+  <textarea id="funcionou" name="funcionou" rows="3" placeholder="Ex.: cadastro, adicionar ao carrinho, cupom BEMVINDO10, pagamento com cartão...">{{ dados.get('funcionou', '') }}</textarea>
+  <label for="nao_funcionou">❌ O que você testou e NÃO funcionou (e o que deve ser corrigido)</label>
+  <textarea id="nao_funcionou" name="nao_funcionou" rows="3">{{ dados.get('nao_funcionou', '') }}</textarea>
+  <label for="nao_testado">⏭️ Funcionalidades que você NÃO testou (e por quê)</label>
+  <textarea id="nao_testado" name="nao_testado" rows="2">{{ dados.get('nao_testado', '') }}</textarea>
+  <label for="sugestoes">💡 Sugestões de melhoria</label>
+  <textarea id="sugestoes" name="sugestoes" rows="2">{{ dados.get('sugestoes', '') }}</textarea>
+  <label for="nota">Nota geral (1 a 5)</label>
+  <select id="nota" name="nota"><option value="">-</option>{% for n in range(5, 0, -1) %}<option value="{{ n }}" {{ 'selected' if dados.get('nota') == n|string }}>{{ n }} {{ '⭐' * n }}</option>{% endfor %}</select>
+  <label for="print">Print da tela com erro (opcional, até 5 MB)</label>
+  <input id="print" name="print" type="file" accept="image/*">
+  <button class="btn btn-primario">Enviar laudo</button>
+</form>
+{% endblock %}

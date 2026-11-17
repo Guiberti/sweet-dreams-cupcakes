@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block titulo %}Checkout · Sweet Dreams{% endblock %}
+{% block conteudo %}
+<ol class="passos" aria-label="Etapas da compra">
+  <li class="feito">Carrinho</li><li class="atual">Entrega</li><li>Pagamento</li>
+</ol>
+<h1>Entrega</h1>
+<form method="get" id="form-entrega" class="caixa">
+  <fieldset class="opcoes">
+    <legend>Como você quer receber?</legend>
+    <label class="opcao"><input type="radio" name="tipo_entrega" value="ENTREGA" {{ 'checked' if tipo == 'ENTREGA' }} data-auto-submit-change> 🛵 Entrega em casa</label>
+    <label class="opcao"><input type="radio" name="tipo_entrega" value="RETIRADA" {{ 'checked' if tipo == 'RETIRADA' }} data-auto-submit-change> 🏪 Retirar na loja (grátis)</label>
+  </fieldset>
+  {% if tipo == 'ENTREGA' %}
+    {% if enderecos %}
+    <fieldset class="opcoes">
+      <legend>Endereço de entrega</legend>
+      {% for e in enderecos %}
+      <label class="opcao"><input type="radio" name="endereco_id" value="{{ e.id }}" {{ 'checked' if endereco and endereco.id == e.id }} data-auto-submit-change>
+        <span><b>{{ e.apelido }}</b><br><small>{{ e.logradouro }}, {{ e.numero }} - {{ e.bairro }}, {{ e.cidade }}/{{ e.uf }} · CEP {{ e.cep[:5] }}-{{ e.cep[5:] }}</small></span></label>
+      {% endfor %}
+    </fieldset>
+    {% endif %}
+    <a class="btn bloco" href="{{ url_for('conta.novo_endereco', voltar='checkout') }}">+ Novo endereço</a>
+    {% if erro_frete %}<p class="alerta alerta-erro">{{ erro_frete }}</p>{% endif %}
+    {% if frete_info %}<p class="muted">Entrega em {{ frete_info.regiao }} · até {{ frete_info.prazo_min }} min após o preparo</p>{% endif %}
+  {% else %}
+    <p class="caixa-info">🏪 Retirada na loja: Rua das Flores, 500 - Centro, Curitiba/PR · seg. a sáb., 10h às 19h.</p>
+  {% endif %}
+  <noscript><button class="btn">Atualizar frete</button></noscript>
+</form>
+
+<form method="post" class="caixa resumo">
+  <input type="hidden" name="tipo_entrega" value="{{ tipo }}">
+  {% if endereco %}<input type="hidden" name="endereco_id" value="{{ endereco.id }}">{% endif %}
+  <h2>Resumo</h2>
+  {% for i in itens %}<div><span>{{ i.quantidade }}× {{ i.produto.nome }}</span><span>{{ i.subtotal|moeda }}</span></div>{% endfor %}
+  <hr>
+  <div><span>Produtos</span><span>{{ totais.produtos|moeda }}</span></div>
+  {% if totais.desconto %}<div class="txt-sucesso"><span>Desconto ({{ cupom_codigo }})</span><span>− {{ totais.desconto|moeda }}</span></div>{% endif %}
+  <div><span>Frete</span><span>{% if tipo == 'RETIRADA' %}Grátis{% elif frete_info %}{{ 'Grátis' if frete_info.valor == 0 else frete_info.valor|moeda }}{% else %}-{% endif %}</span></div>
+  <div class="total"><span>Total</span><span data-testid="total-checkout">{{ totais.total|moeda }}</span></div>
+  <label for="observacoes">Observações (opcional)</label>
+  <textarea id="observacoes" name="observacoes" maxlength="300" rows="2" placeholder="Ex.: sem granulado, é para presente..."></textarea>
+  <button class="btn btn-primario bloco" {{ 'disabled' if tipo == 'ENTREGA' and (not endereco or erro_frete) }}>Ir para o pagamento</button>
+</form>
+{% endblock %}

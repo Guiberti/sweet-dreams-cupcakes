@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block conteudo %}
+<div class="vazio">
+  <p class="emoji-grande">🙏</p>
+  <h1>Laudo enviado!</h1>
+  <p>Obrigado pela ajuda. Seu retorno será usado para melhorar o app.</p>
+  <a class="btn btn-primario" href="{{ url_for('catalogo.inicio') }}">Voltar ao app</a>
+</div>
+{% endblock %}

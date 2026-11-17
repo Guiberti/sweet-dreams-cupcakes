@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% from "_macros.html" import cupcake %}
+{% block conteudo %}
+<form class="busca" action="{{ url_for('catalogo.inicio') }}" method="get" role="search">
+  <label for="busca" class="sr-only">Buscar cupcakes</label>
+  <input id="busca" name="busca" type="search" placeholder="🔍 Buscar cupcakes..." value="{{ busca }}" maxlength="60">
+  {% if categoria_atual %}<input type="hidden" name="categoria" value="{{ categoria_atual }}">{% endif %}
+</form>
+
+{% if not busca and not categoria_atual %}
+<section class="banner" aria-label="Promoção">
+  <strong>BEM-VINDO À SWEET DREAMS</strong>
+  <span>Use o cupom <b>BEMVINDO10</b> e ganhe 10% OFF</span>
+  <small>Frete grátis em Curitiba acima de R$ 150</small>
+</section>
+{% endif %}
+
+<nav class="chips" aria-label="Categorias">
+  <a href="{{ url_for('catalogo.inicio', busca=busca or None) }}" class="chip {{ 'ativo' if not categoria_atual }}">Todos</a>
+  {% for c in categorias %}
+  <a href="{{ url_for('catalogo.inicio', categoria=c.id, busca=busca or None) }}" class="chip {{ 'ativo' if categoria_atual == c.id }}">{{ c.nome }}</a>
+  {% endfor %}
+</nav>
+
+{% if busca %}<p class="info-busca">Resultados para “{{ busca }}”: {{ produtos|length }} produto(s)</p>{% endif %}
+
+{% if produtos %}
+<section class="grade-produtos">
+  {% for p in produtos %}
+  <article class="card-produto {{ 'esgotado' if p.estoque == 0 }}">
+    <a href="{{ url_for('catalogo.detalhe', produto_id=p.id) }}" class="card-link">
+      <div class="card-img" style="--cor: {{ p.cor }}">
+        {% if p.estoque == 0 %}<span class="selo selo-esgotado">ESGOTADO</span>
+        {% elif p.destaque %}<span class="selo">{{ p.destaque }}</span>{% endif %}
+        {{ cupcake(p.cor, 88) }}
+      </div>
+      <h2>{{ p.nome }}</h2>
+      <p class="preco">{{ p.preco|moeda }}</p>
+    </a>
+    {% if p.estoque > 0 %}
+    <form method="post" action="{{ url_for('carrinho.adicionar', produto_id=p.id) }}">
+      <button class="btn-mais" aria-label="Adicionar {{ p.nome }} ao carrinho">+</button>
+    </form>
+    {% endif %}
+  </article>
+  {% endfor %}
+</section>
+{% else %}
+<div class="vazio">
+  <p>Nenhum cupcake encontrado. 😕</p>
+  <a class="btn" href="{{ url_for('catalogo.inicio') }}">Ver todo o cardápio</a>
+</div>
+{% endif %}
+{% endblock %}

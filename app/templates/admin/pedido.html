@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block titulo %}{{ pedido.numero }} · Admin{% endblock %}
+{% block body_class %}admin{% endblock %}
+{% block conteudo %}
+<a class="voltar" href="{{ url_for('admin.pedidos') }}">← Pedidos</a>
+<h1>Pedido {{ pedido.numero }} <span class="status status-{{ pedido.status|lower }}">{{ rotulos[pedido.status] }}</span></h1>
+<div class="duas-colunas">
+  <section class="caixa">
+    <h2>Cliente</h2>
+    <p><b>{{ pedido.cliente_nome }}</b><br>{{ pedido.cliente_telefone or '' }}</p>
+    <p>{{ 'Entrega: ' ~ pedido.endereco_entrega if pedido.tipo_entrega == 'ENTREGA' else 'Retirada na loja' }}</p>
+    {% if pedido.observacoes %}<p>Obs.: {{ pedido.observacoes }}</p>{% endif %}
+    {% if pagamento %}<p>Pagamento: {{ pagamento.forma }} · {{ pagamento.status }}{{ ' · ' ~ pagamento.codigo_transacao if pagamento.codigo_transacao }}</p>{% endif %}
+  </section>
+  <section class="caixa">
+    <h2>Ações</h2>
+    {% if proximos %}
+    <form method="post" class="linha-form">
+      <input type="hidden" name="acao" value="status">
+      <label for="status" class="sr-only">Novo status</label>
+      <select id="status" name="status">{% for s in proximos %}<option value="{{ s }}">{{ rotulos[s] }}</option>{% endfor %}</select>
+      <button class="btn btn-primario">Atualizar status</button>
+    </form>
+    {% else %}<p class="muted">Pedido finalizado - sem ações disponíveis.</p>{% endif %}
+    {% if pedido.tipo_entrega == 'ENTREGA' and pedido.status in ('CONFIRMADO', 'EM_PREPARO', 'SAIU_PARA_ENTREGA') %}
+    <form method="post" class="linha-form">
+      <input type="hidden" name="acao" value="entregador">
+      <label for="entregador_id" class="sr-only">Entregador</label>
+      <select id="entregador_id" name="entregador_id">{% for e in entregadores %}<option value="{{ e.id }}" {{ 'selected' if pedido.entregador_id == e.id }}>{{ e.nome }}</option>{% endfor %}</select>
+      <button class="btn">Atribuir entregador</button>
+    </form>
+    {% endif %}
+  </section>
+</div>
+<section class="caixa">
+  <h2>Itens</h2>
+  <table class="tabela"><thead><tr><th>Produto</th><th>Qtd</th><th>Unit.</th><th>Subtotal</th></tr></thead><tbody>
+    {% for i in itens %}<tr><td>{{ i.nome }}</td><td>{{ i.quantidade }}</td><td>{{ i.preco_unitario|moeda }}</td><td>{{ i.subtotal|moeda }}</td></tr>{% endfor %}
+  </tbody><tfoot>
+    <tr><td colspan="3">Frete</td><td>{{ pedido.valor_frete|moeda }}</td></tr>
+    <tr><td colspan="3">Desconto</td><td>− {{ pedido.valor_desconto|moeda }}</td></tr>
+    <tr><th colspan="3">Total</th><th>{{ pedido.valor_total|moeda }}</th></tr>
+  </tfoot></table>
+</section>
+<section class="caixa">
+  <h2>Histórico</h2>
+  <ul class="lista-simples">{% for h in historico %}<li>{{ h.data_hora|data }} - {{ rotulos[h.status] }} <small class="muted">por {{ h.usuario_nome or 'sistema' }}</small></li>{% endfor %}</ul>
+</section>
+{% endblock %}

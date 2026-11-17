@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+instance/
+app/static/uploads/*
+!app/static/uploads/.gitkeep
+.coverage
+htmlcov/
+.DS_Store
+Thumbs.db
+~$*

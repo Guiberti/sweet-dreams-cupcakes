@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block titulo %}{{ 'Editar' if produto else 'Novo' }} produto · Admin{% endblock %}
+{% block body_class %}admin{% endblock %}
+{% block conteudo %}
+{% set d = dados or {} %}
+<a class="voltar" href="{{ url_for('admin.produtos') }}">← Produtos</a>
+<h1>{{ 'Editar produto' if produto else 'Novo produto' }}</h1>
+<form method="post" class="caixa formulario" novalidate>
+  <label for="nome">Nome *</label>
+  <input id="nome" name="nome" required value="{{ d['nome'] or '' }}">
+  <label for="categoria_id">Categoria *</label>
+  <select id="categoria_id" name="categoria_id">
+    {% for c in categorias %}<option value="{{ c.id }}" {{ 'selected' if (d['categoria_id']|string) == (c.id|string) }}>{{ c.nome }}</option>{% endfor %}
+  </select>
+  <label for="descricao">Descrição</label>
+  <textarea id="descricao" name="descricao" rows="3">{{ d['descricao'] or '' }}</textarea>
+  <div class="duas-colunas">
+    <div><label for="preco">Preço (R$) *</label><input id="preco" name="preco" inputmode="decimal" required value="{{ d['preco'] or '' }}"></div>
+    <div><label for="estoque">Estoque *</label><input id="estoque" name="estoque" type="number" min="0" required value="{{ d['estoque'] if d['estoque'] is not none else '' }}"></div>
+  </div>
+  <div class="duas-colunas">
+    <div><label for="calorias">Calorias (kcal)</label><input id="calorias" name="calorias" type="number" min="0" value="{{ d['calorias'] or '' }}"></div>
+    <div><label for="cor">Cor da cobertura</label><input id="cor" name="cor" type="color" value="{{ d['cor'] or '#FF85C0' }}"></div>
+  </div>
+  <label for="destaque">Selo de destaque</label>
+  <input id="destaque" name="destaque" placeholder="NOVO, PROMOÇÃO, MAIS VENDIDO..." value="{{ d['destaque'] or '' }}" maxlength="20">
+  <label for="ativo">Situação</label>
+  <select id="ativo" name="ativo"><option value="1">Ativo (aparece no app)</option><option value="0" {{ 'selected' if d['ativo']|string == '0' }}>Inativo</option></select>
+  <button class="btn btn-primario">Salvar</button>
+</form>
+{% endblock %}

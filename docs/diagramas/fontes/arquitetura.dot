@@ -1,0 +1,21 @@
+digraph MVC {
+  graph [rankdir=LR, fontname="Helvetica", label="Arquitetura em camadas (MVC) - Sweet Dreams Cupcakes", labelloc=t, fontsize=16, compound=true, nodesep=0.3];
+  node [fontname="Helvetica", fontsize=10, shape=box, style="rounded,filled", fillcolor="#FFF0F7", color="#E86AA6"];
+  edge [fontname="Helvetica", fontsize=9];
+  user [label="Navegador / Celular\n(cliente, admin, entregador)", shape=box, fillcolor="#EEEEEE", color="#777777"];
+  subgraph cluster_view { label="VIEW - app/templates + static"; style="rounded"; color="#888888";
+    v1 [label="Templates Jinja2 (HTML5)"]; v2 [label="CSS mobile-first\n(WCAG 2.1 AA)"]; v3 [label="JavaScript\n(máscaras, abas, +/−)"]; }
+  subgraph cluster_ctrl { label="CONTROLLER - app/controllers (Blueprints Flask)"; style="rounded"; color="#888888";
+    c1 [label="auth"]; c2 [label="catalogo"]; c3 [label="carrinho"]; c4 [label="pedidos"]; c5 [label="conta"]; c6 [label="admin"]; c7 [label="entregador"]; c8 [label="feedback"]; }
+  subgraph cluster_srv { label="SERVICES - regras puras"; style="rounded"; color="#888888";
+    s1 [label="validacoes"]; s2 [label="frete"]; s3 [label="pagamento\n(gateway simulado)"]; }
+  subgraph cluster_model { label="MODEL - app/models"; style="rounded"; color="#888888";
+    m1 [label="Usuario / Endereco"]; m2 [label="Produto / Categoria"]; m3 [label="Pedido / ItemPedido\nPagamento / Historico"]; m4 [label="Cupom"]; m5 [label="FeedbackTeste"]; }
+  db [label="SQLite\n(database/schema.sql)", shape=cylinder, fillcolor="#E8F1FF", color="#3367D6"];
+  user -> c2 [label="HTTP request", lhead=cluster_ctrl];
+  c4 -> s3 [lhead=cluster_srv, ltail=cluster_ctrl, label="usa"];
+  c4 -> m3 [lhead=cluster_model, ltail=cluster_ctrl, label="lê / grava"];
+  m3 -> db [ltail=cluster_model, label="SQL (sqlite3)"];
+  c2 -> v1 [ltail=cluster_ctrl, lhead=cluster_view, label="render_template"];
+  v1 -> user [ltail=cluster_view, label="HTML"];
+}

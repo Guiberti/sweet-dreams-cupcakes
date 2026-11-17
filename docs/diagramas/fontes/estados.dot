@@ -1,0 +1,17 @@
+digraph Estados {
+  graph [rankdir=LR, fontname="Helvetica", label="Diagrama de Máquina de Estados - Pedido", labelloc=t, fontsize=16];
+  node [fontname="Helvetica", fontsize=10, shape=box, style="rounded,filled", fillcolor="#FFF0F7", color="#E86AA6"];
+  edge [fontname="Helvetica", fontsize=9];
+  ini [shape=circle, label="", width=0.25, style=filled, fillcolor=black];
+  fim [shape=doublecircle, label="", width=0.2, style=filled, fillcolor=black];
+  AG [label="AGUARDANDO_PAGAMENTO"]; CO [label="CONFIRMADO"]; EP [label="EM_PREPARO"];
+  SE [label="SAIU_PARA_ENTREGA"]; EN [label="ENTREGUE", fillcolor="#E6F7EC", color="#2E7D32"]; CA [label="CANCELADO", fillcolor="#FDECEC", color="#C62828"];
+  ini -> AG [label="cliente finaliza\npedido"];
+  AG -> CO [label="pagamento aprovado\n(cartão / PIX)"];
+  CO -> EP [label="admin inicia preparo"];
+  EP -> SE [label="entregador sai\n[tipo = ENTREGA]"];
+  SE -> EN [label="entregador confirma"];
+  EP -> EN [label="cliente retira\n[tipo = RETIRADA]"];
+  AG -> CA [label="cliente/admin cancela"]; CO -> CA [label="cancela\n/ devolve estoque"]; EP -> CA [label="admin cancela"];
+  EN -> fim; CA -> fim;
+}

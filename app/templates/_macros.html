@@ -1,0 +1,13 @@
+{% macro cupcake(cor, tamanho=96) -%}
+<svg class="cupcake" width="{{ tamanho }}" height="{{ tamanho }}" viewBox="0 0 100 100" role="img" aria-hidden="true">
+  <path d="M22 52 L30 90 Q50 96 70 90 L78 52 Z" fill="#F7D9A8" stroke="#D9A86A" stroke-width="2"/>
+  <path d="M34 54 L38 90 M50 54 L50 93 M66 54 L62 90" stroke="#D9A86A" stroke-width="2"/>
+  <path d="M16 54 Q12 40 26 36 Q24 20 42 20 Q48 8 60 16 Q76 14 74 32 Q90 36 84 54 Z" fill="{{ cor }}" stroke="rgba(0,0,0,.18)" stroke-width="2"/>
+  <circle cx="54" cy="12" r="6" fill="#E0233C"/>
+  <path d="M30 34 Q38 30 44 36 M54 30 Q62 26 68 32" stroke="rgba(255,255,255,.45)" stroke-width="3" fill="none" stroke-linecap="round"/>
+</svg>
+{%- endmacro %}
+
+{% macro badge_status(status, rotulo) -%}
+<span class="status status-{{ status|lower }}">{{ rotulo }}</span>
+{%- endmacro %}

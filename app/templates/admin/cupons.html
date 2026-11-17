@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block titulo %}Cupons · Admin{% endblock %}
+{% block body_class %}admin{% endblock %}
+{% block conteudo %}
+<h1>Cupons de desconto</h1>
+<form method="post" class="caixa formulario">
+  <h2>Novo cupom</h2>
+  <div class="duas-colunas">
+    <div><label for="codigo">Código *</label><input id="codigo" name="codigo" required maxlength="30" style="text-transform:uppercase"></div>
+    <div><label for="tipo_desconto">Tipo *</label><select id="tipo_desconto" name="tipo_desconto"><option value="PERCENTUAL">Percentual (%)</option><option value="VALOR_FIXO">Valor fixo (R$)</option></select></div>
+  </div>
+  <div class="duas-colunas">
+    <div><label for="valor_desconto">Desconto *</label><input id="valor_desconto" name="valor_desconto" inputmode="decimal" required></div>
+    <div><label for="valor_minimo_pedido">Pedido mínimo (R$)</label><input id="valor_minimo_pedido" name="valor_minimo_pedido" inputmode="decimal" value="0"></div>
+  </div>
+  <div class="duas-colunas">
+    <div><label for="data_validade">Validade *</label><input id="data_validade" name="data_validade" type="date" required></div>
+    <div><label for="quantidade_disponivel">Quantidade *</label><input id="quantidade_disponivel" name="quantidade_disponivel" type="number" min="1" value="100" required></div>
+  </div>
+  <button class="btn btn-primario">Criar cupom</button>
+</form>
+<div class="tabela-rolagem">
+<table class="tabela">
+  <thead><tr><th>Código</th><th>Desconto</th><th>Mínimo</th><th>Validade</th><th>Restantes</th><th>Situação</th><th></th></tr></thead>
+  <tbody>
+  {% for c in cupons %}
+  <tr class="{{ 'inativo' if not c.ativo }}"><td><b>{{ c.codigo }}</b></td>
+    <td>{{ (c.valor_desconto|int ~ '%') if c.tipo_desconto == 'PERCENTUAL' else c.valor_desconto|moeda }}</td>
+    <td>{{ c.valor_minimo_pedido|moeda }}</td><td>{{ c.data_validade|data('%d/%m/%Y') }}</td><td>{{ c.quantidade_disponivel }}</td>
+    <td>{{ 'Ativo' if c.ativo else 'Inativo' }}</td>
+    <td><form method="post" action="{{ url_for('admin.cupom_alternar', cupom_id=c.id) }}"><button class="link">{{ 'Desativar' if c.ativo else 'Ativar' }}</button></form></td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

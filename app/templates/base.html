@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#FF85C0">
+  <title>{% block titulo %}Sweet Dreams Cupcakes{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+  <header class="topo">
+    <a class="marca" href="{{ url_for('catalogo.inicio') }}" aria-label="Sweet Dreams - página inicial">
+      <span aria-hidden="true">🧁</span> Sweet Dreams
+    </a>
+    <nav class="topo-acoes" aria-label="Conta">
+      {% if usuario and usuario.tipo == 'ADMIN' %}
+        <a href="{{ url_for('admin.painel') }}">Painel</a>
+      {% elif usuario and usuario.tipo == 'ENTREGADOR' %}
+        <a href="{{ url_for('entregador.painel') }}">Entregas</a>
+      {% endif %}
+      {% if usuario %}
+        <a href="{{ url_for('auth.logout') }}">Sair</a>
+      {% else %}
+        <a href="{{ url_for('auth.login') }}">Entrar</a>
+      {% endif %}
+      {% if not usuario or usuario.tipo == 'CLIENTE' %}
+      <a class="carrinho-topo" href="{{ url_for('carrinho.ver') }}" aria-label="Carrinho com {{ qtd_carrinho }} itens">
+        🛒 <span class="contador" data-testid="contador-carrinho">{{ qtd_carrinho }}</span>
+      </a>
+      {% endif %}
+    </nav>
+  </header>
+
+  {% if usuario and usuario.tipo == 'ADMIN' %}
+  <nav class="subnav" aria-label="Administração">
+    <a href="{{ url_for('admin.painel') }}">Dashboard</a>
+    <a href="{{ url_for('admin.pedidos') }}">Pedidos</a>
+    <a href="{{ url_for('admin.produtos') }}">Produtos</a>
+    <a href="{{ url_for('admin.cupons') }}">Cupons</a>
+    <a href="{{ url_for('admin.laudos') }}">Laudos de teste</a>
+  </nav>
+  {% endif %}
+
+  <main id="conteudo" class="conteudo">
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+      {% if mensagens %}
+      <div class="mensagens" role="status" aria-live="polite">
+        {% for categoria, msg in mensagens %}
+          <div class="alerta alerta-{{ categoria }}">{{ msg }}<button class="fechar" aria-label="Fechar">×</button></div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    {% endwith %}
+    {% block conteudo %}{% endblock %}
+  </main>
+
+  {% if not usuario or usuario.tipo == 'CLIENTE' %}
+  <nav class="nav-inferior" aria-label="Navegação principal">
+    <a href="{{ url_for('catalogo.inicio') }}" class="{{ 'ativo' if request.endpoint == 'catalogo.inicio' }}"><span>🏠</span>Início</a>
+    <a href="{{ url_for('carrinho.ver') }}" class="{{ 'ativo' if request.endpoint and request.endpoint.startswith('carrinho') }}"><span>🛒</span>Carrinho</a>
+    <a href="{{ url_for('pedidos.meus_pedidos') }}" class="{{ 'ativo' if request.endpoint in ('pedidos.meus_pedidos', 'pedidos.acompanhar') }}"><span>📦</span>Pedidos</a>
+    <a href="{{ url_for('conta.perfil') }}" class="{{ 'ativo' if request.endpoint and request.endpoint.startswith('conta') }}"><span>👤</span>Conta</a>
+  </nav>
+  {% endif %}
+
+  <footer class="rodape">
+    Sweet Dreams Cupcakes · Projeto acadêmico (PIT Engenharia de Software II) ·
+    <a href="{{ url_for('feedback.formulario') }}">Reportar teste / bug</a>
+  </footer>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

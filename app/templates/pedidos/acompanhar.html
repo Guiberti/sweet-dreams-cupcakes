@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% from "_macros.html" import cupcake %}
+{% block titulo %}Pedido {{ pedido.numero }} · Sweet Dreams{% endblock %}
+{% block conteudo %}
+<a class="voltar" href="{{ url_for('pedidos.meus_pedidos') }}">← Meus pedidos</a>
+<h1>Pedido {{ pedido.numero }}</h1>
+<p class="muted">Feito em {{ pedido.data_criacao|data }}</p>
+
+{% if pedido.status == 'CANCELADO' %}
+  <p class="alerta alerta-erro">Este pedido foi cancelado.</p>
+{% else %}
+<ol class="linha-tempo" aria-label="Andamento do pedido">
+  {% set ns = namespace(passou=true) %}
+  {% for etapa in etapas %}
+    {% set atual = (etapa == pedido.status) %}
+    <li class="{{ 'feito' if ns.passou and not atual }} {{ 'atual' if atual }}">
+      {{ {'AGUARDANDO_PAGAMENTO':'Aguardando pagamento','CONFIRMADO':'Pagamento confirmado','EM_PREPARO':'Em preparo','SAIU_PARA_ENTREGA':'Saiu para entrega','ENTREGUE':'Entregue'}[etapa] if not (etapa == 'ENTREGUE' and pedido.tipo_entrega == 'RETIRADA') else 'Retirado' }}
+      {% for h in historico if h.status == etapa %}<small>{{ h.data_hora|data('%d/%m %H:%M') }}</small>{% endfor %}
+    </li>
+    {% if atual %}{% set ns.passou = false %}{% endif %}
+  {% endfor %}
+</ol>
+{% endif %}
+
+{% if pedido.status == 'AGUARDANDO_PAGAMENTO' %}
+  <a class="btn btn-primario bloco" href="{{ url_for('pedidos.pagamento', pedido_id=pedido.id) }}">Pagar agora</a>
+{% endif %}
+
+<section class="caixa">
+  <h2>Itens</h2>
+  <ul class="lista-simples">
+    {% for i in itens %}<li>{{ cupcake(i.cor, 36) }} {{ i.quantidade }}× {{ i.nome }} <b>{{ i.subtotal|moeda }}</b></li>{% endfor %}
+  </ul>
+</section>
+<section class="caixa resumo">
+  <div><span>Produtos</span><span>{{ pedido.valor_produtos|moeda }}</span></div>
+  {% if pedido.valor_desconto %}<div class="txt-sucesso"><span>Desconto {{ pedido.cupom_codigo or '' }}</span><span>− {{ pedido.valor_desconto|moeda }}</span></div>{% endif %}
+  <div><span>Frete</span><span>{{ 'Grátis' if not pedido.valor_frete else pedido.valor_frete|moeda }}</span></div>
+  <div class="total"><span>Total</span><span>{{ pedido.valor_total|moeda }}</span></div>
+</section>
+<section class="caixa">
+  <h2>{{ 'Entrega' if pedido.tipo_entrega == 'ENTREGA' else 'Retirada na loja' }}</h2>
+  <p>{{ pedido.endereco_entrega or 'Rua das Flores, 500 - Centro, Curitiba/PR' }}</p>
+  {% if pedido.entregador_nome %}<p>🛵 Entregador: <b>{{ pedido.entregador_nome }}</b></p>{% endif %}
+  {% if pagamento %}<p>Pagamento: {{ 'Cartão ' ~ pagamento.bandeira ~ ' final ' ~ pagamento.cartao_final if pagamento.forma == 'CARTAO' else 'PIX' }} · {{ pagamento.status|lower }}</p>{% endif %}
+  {% if pedido.observacoes %}<p>Obs.: {{ pedido.observacoes }}</p>{% endif %}
+</section>
+{% if pedido.status in ('AGUARDANDO_PAGAMENTO', 'CONFIRMADO') %}
+<form method="post" action="{{ url_for('pedidos.cancelar', pedido_id=pedido.id) }}" class="centro" data-confirmar="Deseja cancelar este pedido?">
+  <button class="link-perigo">Cancelar pedido</button>
+</form>
+{% endif %}
+{% endblock %}

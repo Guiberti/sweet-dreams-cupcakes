@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% from "_macros.html" import cupcake %}
+{% block titulo %}Carrinho · Sweet Dreams{% endblock %}
+{% block conteudo %}
+<h1>Meu carrinho</h1>
+{% if itens %}
+<ul class="lista-carrinho">
+  {% for i in itens %}
+  <li class="item-carrinho">
+    {{ cupcake(i.produto.cor, 56) }}
+    <div class="item-info">
+      <strong>{{ i.produto.nome }}</strong>
+      <span class="muted">{{ i.preco|moeda }} cada</span>
+      <form method="post" action="{{ url_for('carrinho.atualizar', produto_id=i.produto_id) }}" class="qtd-form">
+        <div class="qtd pequena" data-max="{{ i.produto.estoque }}" data-auto-submit>
+          <button type="button" class="qtd-menos" aria-label="Diminuir">−</button>
+          <input name="quantidade" type="number" min="0" max="{{ i.produto.estoque }}" value="{{ i.quantidade }}" aria-label="Quantidade de {{ i.produto.nome }}">
+          <button type="button" class="qtd-mais" aria-label="Aumentar">+</button>
+        </div>
+      </form>
+    </div>
+    <div class="item-direita">
+      <b>{{ i.subtotal|moeda }}</b>
+      <form method="post" action="{{ url_for('carrinho.remover', produto_id=i.produto_id) }}">
+        <button class="link-perigo" aria-label="Remover {{ i.produto.nome }}">Remover</button>
+      </form>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+
+<section class="caixa">
+  {% if cupom %}
+    <div class="cupom-aplicado"><span>🎟️ Cupom <b>{{ cupom.codigo }}</b> aplicado</span>
+      <form method="post" action="{{ url_for('carrinho.remover_cupom') }}"><button class="link-perigo">remover</button></form>
+    </div>
+  {% else %}
+  <form method="post" action="{{ url_for('carrinho.aplicar_cupom') }}" class="linha-form">
+    <label for="codigo" class="sr-only">Cupom de desconto</label>
+    <input id="codigo" name="codigo" placeholder="Cupom de desconto" maxlength="30" style="text-transform:uppercase">
+    <button class="btn">Aplicar</button>
+  </form>
+  {% endif %}
+</section>
+
+<section class="caixa resumo">
+  <div><span>Produtos</span><span>{{ totais.produtos|moeda }}</span></div>
+  {% if totais.desconto %}<div class="txt-sucesso"><span>Desconto</span><span>− {{ totais.desconto|moeda }}</span></div>{% endif %}
+  <div class="muted"><span>Frete</span><span>calculado no checkout</span></div>
+  <div class="total"><span>Subtotal</span><span>{{ totais.total|moeda }}</span></div>
+  <a class="btn btn-primario bloco" href="{{ url_for('pedidos.checkout') }}">Finalizar pedido</a>
+  <a class="btn bloco" href="{{ url_for('catalogo.inicio') }}">Continuar comprando</a>
+</section>
+{% else %}
+<div class="vazio">
+  <p class="emoji-grande">🛒</p>
+  <p>Seu carrinho está vazio.</p>
+  <a class="btn btn-primario" href="{{ url_for('catalogo.inicio') }}">Ver cardápio</a>
+</div>
+{% endif %}
+{% endblock %}

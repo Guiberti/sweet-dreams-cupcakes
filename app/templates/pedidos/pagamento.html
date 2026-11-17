@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block titulo %}Pagamento · Sweet Dreams{% endblock %}
+{% block conteudo %}
+<ol class="passos" aria-label="Etapas da compra">
+  <li class="feito">Carrinho</li><li class="feito">Entrega</li><li class="atual">Pagamento</li>
+</ol>
+<h1>Pagamento</h1>
+<p class="caixa total-destaque">Pedido <b>{{ pedido.numero }}</b> · Total <b>{{ pedido.valor_total|moeda }}</b></p>
+
+{% if pix %}
+<section class="caixa pix">
+  <h2>Pague com PIX</h2>
+  <div class="qr" aria-hidden="true"></div>
+  <label for="pix-codigo">PIX copia e cola</label>
+  <textarea id="pix-codigo" readonly rows="3">{{ pix.pix_copia_cola }}</textarea>
+  <button type="button" class="btn bloco" data-copiar="pix-codigo">Copiar código</button>
+  <p class="muted">Após o pagamento, a confirmação é automática. <br><small>(Ambiente de demonstração: use o botão abaixo para simular o aviso do banco.)</small></p>
+  <form method="post" action="{{ url_for('pedidos.confirmar_pix', pedido_id=pedido.id) }}">
+    <button class="btn btn-primario bloco">Simular pagamento PIX recebido</button>
+  </form>
+</section>
+{% endif %}
+
+<div class="abas" role="tablist">
+  <button class="aba ativa" role="tab" data-aba="aba-cartao" aria-selected="true">💳 Cartão de crédito</button>
+  <button class="aba" role="tab" data-aba="aba-pix" aria-selected="false">⚡ PIX</button>
+</div>
+
+<form method="post" id="aba-cartao" class="caixa formulario painel-aba" novalidate autocomplete="off">
+  <input type="hidden" name="forma" value="CARTAO">
+  <label for="numero">Número do cartão</label>
+  <input id="numero" name="numero" inputmode="numeric" placeholder="0000 0000 0000 0000" data-mascara="cartao" maxlength="23" required>
+  <label for="nome_cartao">Nome impresso no cartão</label>
+  <input id="nome_cartao" name="nome_cartao" required style="text-transform:uppercase">
+  <div class="duas-colunas">
+    <div><label for="validade">Validade</label><input id="validade" name="validade" placeholder="MM/AA" data-mascara="validade" maxlength="5" required></div>
+    <div><label for="cvv">CVV</label><input id="cvv" name="cvv" inputmode="numeric" maxlength="4" required></div>
+  </div>
+  <p class="muted"><small>🔒 Não armazenamos o número do seu cartão. Ambiente de demonstração: use <code>4111 1111 1111 1111</code> (aprovado) ou <code>4000 0000 0000 0002</code> (recusado).</small></p>
+  <button class="btn btn-primario bloco">Pagar {{ pedido.valor_total|moeda }}</button>
+</form>
+
+<form method="post" id="aba-pix" class="caixa painel-aba" hidden>
+  <input type="hidden" name="forma" value="PIX">
+  <p>Gere um código PIX e pague pelo app do seu banco. A confirmação é imediata.</p>
+  <button class="btn btn-primario bloco">Gerar código PIX</button>
+</form>
+
+<form method="post" action="{{ url_for('pedidos.cancelar', pedido_id=pedido.id) }}" class="centro" data-confirmar="Deseja cancelar este pedido?">
+  <button class="link-perigo">Cancelar pedido</button>
+</form>
+{% endblock %}

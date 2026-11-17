@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block titulo %}Entregas · Sweet Dreams{% endblock %}
+{% block conteudo %}
+<h1>Minhas entregas</h1>
+{% for p in ativos %}
+<article class="caixa entrega">
+  <div class="cabecalho-acao"><b>{{ p.numero }}</b><span class="status status-{{ p.status|lower }}">{{ p.status.replace('_', ' ')|capitalize }}</span></div>
+  <p>👤 {{ p.cliente_nome }}</p>
+  <p>📍 {{ p.endereco_entrega }}</p>
+  <p>💰 {{ p.valor_total|moeda }} (já pago)</p>
+  {% if p.status == 'EM_PREPARO' %}
+  <form method="post" action="{{ url_for('entregador.atualizar', pedido_id=p.id) }}"><input type="hidden" name="status" value="SAIU_PARA_ENTREGA"><button class="btn btn-primario bloco">Saí para entrega</button></form>
+  {% elif p.status == 'SAIU_PARA_ENTREGA' %}
+  <form method="post" action="{{ url_for('entregador.atualizar', pedido_id=p.id) }}" data-confirmar="Confirmar que o pedido foi entregue?"><input type="hidden" name="status" value="ENTREGUE"><button class="btn btn-primario bloco">Confirmar entrega</button></form>
+  {% else %}
+  <p class="muted">Aguardando a cozinha iniciar o preparo.</p>
+  {% endif %}
+</article>
+{% else %}
+<div class="vazio"><p class="emoji-grande">🛵</p><p>Nenhuma entrega atribuída a você agora.</p></div>
+{% endfor %}
+{% if concluidos %}
+<h2 class="secao">Entregues ({{ concluidos|length }})</h2>
+<ul class="lista-simples">{% for p in concluidos %}<li>{{ p.numero }} - {{ p.cliente_nome }}</li>{% endfor %}</ul>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block titulo %}Laudos de teste · Admin{% endblock %}
+{% block body_class %}admin{% endblock %}
+{% block conteudo %}
+<h1>Laudos de teste ({{ laudos|length }})</h1>
+<p class="muted">Formulário público para os testadores: <a href="{{ url_for('feedback.formulario', _external=True) }}">{{ url_for('feedback.formulario', _external=True) }}</a></p>
+{% for l in laudos %}
+<article class="caixa laudo">
+  <h2>#{{ loop.index }} - {{ l.nome_testador }} <small class="muted">{{ l.perfil_testador or '' }} · teste em {{ l.data_teste|data('%d/%m/%Y') }}{{ ' · nota ' ~ l.nota ~ '/5' if l.nota }}</small></h2>
+  <dl>
+    <dt>✅ Testou e funcionou</dt><dd>{{ l.funcionou or '-' }}</dd>
+    <dt>❌ Testou e não funcionou</dt><dd>{{ l.nao_funcionou or '-' }}</dd>
+    <dt>⏭️ Não testado</dt><dd>{{ l.nao_testado or '-' }}</dd>
+    <dt>💡 Sugestões</dt><dd>{{ l.sugestoes or '-' }}</dd>
+  </dl>
+  {% if l.print_arquivo %}<a href="{{ url_for('static', filename='uploads/' ~ l.print_arquivo) }}" target="_blank"><img class="print" src="{{ url_for('static', filename='uploads/' ~ l.print_arquivo) }}" alt="Print enviado por {{ l.nome_testador }}"></a>{% endif %}
+</article>
+{% else %}
+<p class="muted">Nenhum laudo recebido ainda.</p>
+{% endfor %}
+{% endblock %}

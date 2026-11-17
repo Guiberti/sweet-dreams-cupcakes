@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block titulo %}Meus pedidos · Sweet Dreams{% endblock %}
+{% block conteudo %}
+<h1>Meus pedidos</h1>
+{% set rot = {'AGUARDANDO_PAGAMENTO':'Aguardando pagamento','CONFIRMADO':'Confirmado','EM_PREPARO':'Em preparo','SAIU_PARA_ENTREGA':'Saiu para entrega','ENTREGUE':'Entregue','CANCELADO':'Cancelado'} %}
+{% if pedidos %}
+<ul class="lista-pedidos">
+  {% for p in pedidos %}
+  <li><a href="{{ url_for('pedidos.acompanhar', pedido_id=p.id) }}" class="card-pedido">
+    <div><b>{{ p.numero }}</b><small class="muted">{{ p.data_criacao|data }}</small></div>
+    <div class="direita"><span class="status status-{{ p.status|lower }}">{{ rot[p.status] }}</span><b>{{ p.valor_total|moeda }}</b></div>
+  </a></li>
+  {% endfor %}
+</ul>
+{% else %}
+<div class="vazio"><p class="emoji-grande">📦</p><p>Você ainda não fez pedidos.</p>
+<a class="btn btn-primario" href="{{ url_for('catalogo.inicio') }}">Ver cardápio</a></div>
+{% endif %}
+{% endblock %}

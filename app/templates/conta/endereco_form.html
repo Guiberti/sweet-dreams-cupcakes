@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block titulo %}Novo endereço · Sweet Dreams{% endblock %}
+{% block conteudo %}
+<h1>Novo endereço</h1>
+<form method="post" class="caixa formulario" novalidate>
+  <label for="apelido">Apelido</label>
+  <input id="apelido" name="apelido" placeholder="Casa, Trabalho..." value="{{ dados.get('apelido', '') }}" maxlength="40">
+  <label for="cep">CEP *</label>
+  <input id="cep" name="cep" inputmode="numeric" placeholder="00000-000" data-mascara="cep" required value="{{ dados.get('cep', '') }}">
+  <small class="ajuda">Entregamos em Curitiba e Região Metropolitana (CEPs 80000-000 a 83899-999).</small>
+  <label for="logradouro">Rua *</label>
+  <input id="logradouro" name="logradouro" required value="{{ dados.get('logradouro', '') }}">
+  <div class="duas-colunas">
+    <div><label for="numero">Número *</label><input id="numero" name="numero" required value="{{ dados.get('numero', '') }}"></div>
+    <div><label for="complemento">Complemento</label><input id="complemento" name="complemento" value="{{ dados.get('complemento', '') }}"></div>
+  </div>
+  <label for="bairro">Bairro *</label>
+  <input id="bairro" name="bairro" required value="{{ dados.get('bairro', '') }}">
+  <div class="duas-colunas">
+    <div><label for="cidade">Cidade *</label><input id="cidade" name="cidade" required value="{{ dados.get('cidade', 'Curitiba') }}"></div>
+    <div><label for="uf">UF *</label><input id="uf" name="uf" maxlength="2" required value="{{ dados.get('uf', 'PR') }}" style="text-transform:uppercase"></div>
+  </div>
+  <button class="btn btn-primario">Salvar endereço</button>
+</form>
+{% endblock %}
