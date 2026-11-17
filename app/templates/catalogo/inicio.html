@@ -22,7 +22,10 @@
   {% endfor %}
 </nav>
 
-{% if busca %}<p class="info-busca">Resultados para “{{ busca }}”: {{ produtos|length }} produto(s)</p>{% endif %}
+{% if outra_categoria %}
+<p class="alerta alerta-aviso">Não encontramos “{{ busca }}” em {{ outra_categoria.nome }}. Mostrando resultados de todas as categorias.
+  <a href="{{ url_for('catalogo.inicio', busca=busca) }}">Limpar filtro</a></p>
+{% elif busca %}<p class="info-busca">Resultados para “{{ busca }}”: {{ produtos|length }} produto(s)</p>{% endif %}
 
 {% if produtos %}
 <section class="grade-produtos">

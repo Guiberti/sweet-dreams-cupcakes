@@ -18,6 +18,12 @@ def test_busca_e_filtro(client):
     assert "Limão Vegano" in r and "Red Velvet" not in r
 
 
+def test_busca_com_filtro_errado_mostra_outras_categorias(client):
+    # caso do laudo: "pistache" com o filtro Veganos ligado
+    t = texto(client.get("/?busca=pistache&categoria=3"))
+    assert "Não encontramos" in t and "Pistache" in t
+
+
 def test_produto_inexistente_404(client):
     r = client.get("/produto/999")
     assert r.status_code == 404 and "Ops!" in texto(r)
