@@ -1,6 +1,6 @@
 # cria o app flask, registra os blueprints e os filtros dos templates
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 from flask import Flask, render_template
@@ -46,10 +46,13 @@ def create_app(config: dict | None = None) -> Flask:
         if not valor:
             return ""
         if isinstance(valor, str):
+            tem_hora = len(valor) > 10
             try:
                 valor = datetime.fromisoformat(valor)
             except ValueError:
                 return valor
+            if tem_hora:  # o sqlite grava CURRENT_TIMESTAMP em UTC, aqui converte pro horario de Brasilia
+                valor = valor - timedelta(hours=3)
         return valor.strftime(formato)
 
     @app.errorhandler(404)

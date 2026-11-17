@@ -2,14 +2,40 @@
 
 ## Testes automatizados
 
-Rodar com `python -m pytest -v`. São 83 testes e todos passam:
+São 105 testes e todos passam.
+
+Testes do servidor (`python -m pytest tests --ignore=tests/e2e`):
 
 - 53 unitários (validações, frete, pagamento, cálculo do total, cupom, status do pedido)
 - 10 de integração (model + banco: estoque, transação, cupom)
-- 20 de sistema (fluxos completos: cadastro, compra, admin, entregador)
+- 22 de sistema (fluxos completos pelas rotas: cadastro, compra, admin, entregador)
+
+Testes de interface no navegador (`tests/e2e`): 20 testes que abrem o Chrome de verdade, em tamanho de celular, e usam o site como uma pessoa usaria. Eles testam também o JavaScript da tela (máscaras, botões + e -, abas de pagamento, confirmação antes de cancelar), entradas erradas (cadastro vazio, CEP com letras, quantidade negativa, cupons inválidos), as permissões e se nenhuma página fica mais larga que a tela do celular. Cada teste salva um print em [`e2e/`](e2e/).
+
+Para rodar os de interface: `pip install -r requirements-dev.txt`, `playwright install chromium` e `python -m pytest tests/e2e -v`.
 
 <details><summary>Lista dos testes</summary>
 
+- `test_interface.py::test_compra_completa_pela_interface`
+- `test_interface.py::test_pagamento_recusado_e_depois_pix`
+- `test_interface.py::test_mascaras_de_entrada`
+- `test_interface.py::test_botoes_mais_menos_respeitam_estoque`
+- `test_interface.py::test_abas_cartao_e_pix`
+- `test_interface.py::test_mostrar_ocultar_senha`
+- `test_interface.py::test_cancelar_pede_confirmacao`
+- `test_interface.py::test_cadastro_vazio_mostra_erros`
+- `test_interface.py::test_cep_com_letras_e_fora_da_area`
+- `test_interface.py::test_quantidade_zero_ou_negativa_remove_item`
+- `test_interface.py::test_cupom_invalido_e_expirado`
+- `test_interface.py::test_produto_esgotado_nao_pode_ser_comprado`
+- `test_interface.py::test_admin_sem_login_e_cliente_bloqueado`
+- `test_interface.py::test_entregador_nao_ve_tela_de_compra`
+- `test_interface.py::test_sem_rolagem_horizontal_no_celular[/]`
+- `test_interface.py::test_sem_rolagem_horizontal_no_celular[/produto/1]`
+- `test_interface.py::test_sem_rolagem_horizontal_no_celular[/carrinho/]`
+- `test_interface.py::test_sem_rolagem_horizontal_no_celular[/login]`
+- `test_interface.py::test_sem_rolagem_horizontal_no_celular[/cadastro]`
+- `test_interface.py::test_sem_rolagem_horizontal_no_celular[/teste/]`
 - `test_integracao_models.py::test_usuario_senha_guardada_com_hash`
 - `test_integracao_models.py::test_email_duplicado`
 - `test_integracao_models.py::test_criar_pedido_baixa_estoque_e_calcula_total`
@@ -29,6 +55,7 @@ Rodar com `python -m pytest -v`. São 83 testes e todos passam:
 - `test_sistema_rotas.py::test_visitante_adiciona_ao_carrinho`
 - `test_sistema_rotas.py::test_nao_adiciona_alem_do_estoque`
 - `test_sistema_rotas.py::test_cupom_no_carrinho`
+- `test_sistema_rotas.py::test_cupom_continua_depois_do_login`
 - `test_sistema_rotas.py::test_checkout_exige_login`
 - `test_sistema_rotas.py::test_fluxo_compra_cartao_aprovado`
 - `test_sistema_rotas.py::test_fluxo_compra_cartao_recusado`
@@ -40,6 +67,7 @@ Rodar com `python -m pytest -v`. São 83 testes e todos passam:
 - `test_sistema_rotas.py::test_fluxo_admin_entregador_completo`
 - `test_sistema_rotas.py::test_formulario_de_laudo`
 - `test_sistema_rotas.py::test_formulario_de_laudo_vazio`
+- `test_sistema_rotas.py::test_data_mostrada_no_horario_de_brasilia`
 - `test_unit_frete_pagamento.py::test_frete_curitiba`
 - `test_unit_frete_pagamento.py::test_frete_regiao_metropolitana`
 - `test_unit_frete_pagamento.py::test_frete_gratis_acima_de_150`
@@ -103,6 +131,11 @@ Rodar com `python -m pytest -v`. São 83 testes e todos passam:
 3. Na tela do pedido no admin, "Cancelado" aparecia como primeira opção de status, o que facilitava cancelar sem querer. Agora as opções seguem a ordem do fluxo.
 4. Faltava um espaço no texto do cupom aplicado no carrinho.
 5. O ícone do carrinho aparecia para o admin e o entregador, que não compram nada.
+6. Cupom sumia no login: quem aplicava o cupom antes de entrar na conta perdia o desconto depois do login (o carrinho era mantido, o cupom não). Achado pelo teste de interface da compra completa.
+7. Abas de pagamento: ao clicar em PIX, o formulário do cartão continuava aparecendo embaixo, porque o CSS do formulário anulava o atributo `hidden`. Achado pelo teste de interface das abas.
+8. Horário errado: os pedidos mostravam o horário 3 horas adiantado, porque o SQLite grava a data em UTC. Agora a data é convertida para o horário de Brasília. Percebi olhando os prints dos testes de interface.
+
+Os erros 6 e 7 não apareciam nos testes do servidor, só no navegador.
 
 ## Testes com usuários
 

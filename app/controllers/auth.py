@@ -51,10 +51,13 @@ def login():
         if usuario is None:
             flash("E-mail ou senha incorretos.", "erro")
             return render_template("auth/login.html", email=request.form.get("email", "")), 401
-        carrinho = session.get("carrinho", {})  # preserva o carrinho do visitante
+        carrinho = session.get("carrinho", {})  # mantem carrinho e cupom de quem ainda nao tinha logado
+        cupom = session.get("cupom")
         session.clear()
         session["usuario_id"] = usuario["id"]
         session["carrinho"] = carrinho
+        if cupom:
+            session["cupom"] = cupom
         flash(f"Olá, {usuario['nome'].split()[0]}!", "sucesso")
         return redirect(_destino_seguro(request.args.get("proximo")) or _pagina_inicial(usuario))
     return render_template("auth/login.html", email="")

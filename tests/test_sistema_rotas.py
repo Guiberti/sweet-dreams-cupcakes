@@ -61,6 +61,13 @@ def test_cupom_no_carrinho(client):
     assert "expirou" in texto(client.post("/carrinho/cupom", data={"codigo": "EXPIRADO"}, follow_redirects=True))
 
 
+def test_cupom_continua_depois_do_login(client):
+    client.post("/carrinho/adicionar/1")
+    client.post("/carrinho/cupom", data={"codigo": "BEMVINDO10"})
+    login(client, "cliente@teste.com", "Cliente@123")
+    assert "BEMVINDO10" in texto(client.get("/checkout"))
+
+
 def test_checkout_exige_login(client):
     client.post("/carrinho/adicionar/1")
     r = client.get("/checkout")
@@ -162,3 +169,9 @@ def test_formulario_de_laudo(client, admin_logado):
 
 def test_formulario_de_laudo_vazio(client):
     assert "Informe seu nome" in texto(client.post("/teste/", data={}))
+
+
+def test_data_mostrada_no_horario_de_brasilia(app):
+    formatar = app.jinja_env.filters["data"]
+    assert formatar("2026-11-17 02:03:00") == "16/11/2026 23:03"  # banco guarda em UTC
+    assert formatar("2026-11-17", "%d/%m/%Y") == "17/11/2026"     # data sem hora nao muda

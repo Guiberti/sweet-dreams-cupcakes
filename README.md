@@ -47,10 +47,16 @@ O pagamento é simulado: não existe cobrança de verdade.
 ## Testes
 
 ```bash
-python -m pytest -v
+python -m pytest tests --ignore=tests/e2e -v
 ```
 
-São 83 testes (unitários, de integração e de sistema).
+São 85 testes do servidor (unitários, de integração e de sistema) e mais 20 testes de interface que abrem o navegador. Para rodar os de interface:
+
+```bash
+pip install -r requirements-dev.txt
+playwright install chromium
+python -m pytest tests/e2e -v
+```
 
 ## Pastas
 
