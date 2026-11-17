@@ -47,7 +47,8 @@
   <div><span>Produtos</span><span>{{ totais.produtos|moeda }}</span></div>
   {% if totais.desconto %}<div class="txt-sucesso"><span>Desconto</span><span>− {{ totais.desconto|moeda }}</span></div>{% endif %}
   <div class="muted"><span>Frete</span><span>{% if totais.produtos >= 150 %}Grátis{% else %}a partir de R$ 7,90{% endif %}</span></div>
-  {% if totais.produtos < 150 %}<p class="ajuda">Frete grátis acima de R$ 150 em produtos.</p>{% endif %}
+  {% if totais.produtos < 150 %}<p class="falta-frete" data-testid="falta-frete">🛵 Faltam <b>{{ (150 - totais.produtos)|moeda }}</b> para ganhar frete grátis em Curitiba e região.</p>
+  {% else %}<p class="falta-frete ok">🎉 Você ganhou frete grátis!</p>{% endif %}
   <div class="total"><span>Subtotal</span><span>{{ totais.total|moeda }}</span></div>
   <a class="btn btn-primario bloco" href="{{ url_for('pedidos.checkout') }}">Finalizar pedido</a>
   <a class="btn bloco" href="{{ url_for('catalogo.inicio') }}">Continuar comprando</a>

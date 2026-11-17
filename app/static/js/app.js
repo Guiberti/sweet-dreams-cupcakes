@@ -50,6 +50,18 @@
     b.textContent = "Código copiado ✓";
   }));
 
+  // esconde a barra de baixo quando rola pra baixo e mostra quando rola pra cima (sugestao do laudo)
+  const nav = document.querySelector(".nav-inferior");
+  if (nav) {
+    let ultimo = window.scrollY;
+    window.addEventListener("scroll", () => {
+      const atual = window.scrollY;
+      if (atual > ultimo && atual > 80) nav.classList.add("escondida");
+      else if (atual < ultimo) nav.classList.remove("escondida");
+      ultimo = atual;
+    }, { passive: true });
+  }
+
   // Máscaras de entrada
   const mascaras = {
     telefone: (v) => v.replace(/\D/g, "").slice(0, 11).replace(/^(\d{2})(\d)/, "($1) $2").replace(/(\d)(\d{4})$/, "$1-$2"),

@@ -128,6 +128,10 @@ input[type=color] { padding: 4px; }
 .resumo > div { display: flex; justify-content: space-between; padding: 4px 0; }
 .resumo .total { font-size: 1.2rem; font-weight: 800; border-top: 1px solid var(--borda); margin-top: 8px; padding-top: 12px; }
 .resumo hr { border: 0; border-top: 1px dashed var(--borda); }
+.falta-frete { background: var(--superficie-2); border-radius: 12px; padding: 8px 12px; margin: 8px 0; font-size: .9rem; }
+.falta-frete.ok { color: var(--sucesso); }
+.nav-inferior { transition: transform .2s; }
+.nav-inferior.escondida { transform: translateY(110%); }
 .cupom-aplicado { display: flex; justify-content: space-between; align-items: center; }
 .total-destaque { font-size: 1.1rem; }
 

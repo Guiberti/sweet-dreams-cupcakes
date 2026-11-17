@@ -218,3 +218,11 @@ def test_cancelar_pedido_pago_avisa_estorno(cliente_logado):
     cliente_logado.post(f"/pedido/{pid}/pix/confirmar")
     r = cliente_logado.post(f"/pedido/{pid}/cancelar", follow_redirects=True)
     assert "estornado" in texto(r) and "estorno solicitado" in texto(r)
+
+
+# ---------------------------- sugestao do laudo do Guylherme ----------------------------
+def test_carrinho_mostra_quanto_falta_para_frete_gratis(client):
+    client.post("/carrinho/adicionar/12")  # Caixa Festa R$ 129,90
+    assert "Faltam" in texto(client.get("/carrinho/")) and "R$ 20,10" in texto(client.get("/carrinho/"))
+    client.post("/carrinho/adicionar/1", data={"quantidade": 2})  # + 25,80 = 155,70
+    assert "ganhou frete grátis" in texto(client.get("/carrinho/"))
