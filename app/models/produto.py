@@ -1,4 +1,3 @@
-"""Model Produto e Categoria."""
 from ..db import get_db
 
 
@@ -84,7 +83,7 @@ class Produto:
 
     @staticmethod
     def desativar(produto_id):
-        """Exclusão lógica: produtos já vendidos não podem sumir do histórico de pedidos."""
+        # nao apaga de verdade pq o produto pode estar em pedidos antigos
         db = get_db()
         db.execute("UPDATE produto SET ativo = 0 WHERE id = ?", (produto_id,))
         db.commit()

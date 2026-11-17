@@ -1,4 +1,3 @@
-"""Controller do catálogo: HU-003 (navegar) e HU-004 (detalhe do produto)."""
 from flask import Blueprint, abort, render_template, request
 
 from ..models import Categoria, Produto

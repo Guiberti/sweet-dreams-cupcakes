@@ -1,4 +1,4 @@
-"""Testes UNITÁRIOS - frete (HU-008) e gateway de pagamento simulado (HU-010/011)."""
+# testes unitarios de frete e pagamento
 from datetime import date
 
 import pytest

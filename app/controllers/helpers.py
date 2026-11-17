@@ -1,4 +1,3 @@
-"""Utilitários compartilhados pelos controllers: sessão, autenticação e carrinho."""
 from functools import wraps
 
 from flask import abort, flash, g, redirect, request, session, url_for
@@ -15,7 +14,7 @@ def carregar_usuario():
 
 
 def login_obrigatorio(*tipos):
-    """Exige login; se `tipos` for informado, exige também o perfil (ADMIN, ENTREGADOR, CLIENTE)."""
+    # ex: @login_obrigatorio("ADMIN") -> so admin entra
     def decorador(view):
         @wraps(view)
         def wrapper(*args, **kwargs):

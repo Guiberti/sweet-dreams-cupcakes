@@ -1,8 +1,4 @@
--- =====================================================================
--- Sweet Dreams Cupcakes - Carga inicial (catálogo e cupons)
--- Os usuários de demonstração são criados por app/db.py, pois as senhas
--- precisam ser gravadas com hash (nunca em texto puro).
--- =====================================================================
+-- dados iniciais (os usuarios de teste sao criados no app/db.py por causa do hash da senha)
 
 INSERT INTO categoria (nome, descricao) VALUES
  ('Clássicos', 'Os sabores tradicionais que todo mundo ama'),

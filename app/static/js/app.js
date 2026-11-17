@@ -1,5 +1,4 @@
-// Sweet Dreams - interações do front-end (JavaScript puro, sem dependências).
-// Tudo aqui é melhoria progressiva: o app funciona mesmo sem JavaScript.
+// js simples, sem biblioteca. o site funciona mesmo sem ele
 (function () {
   const $$ = (sel, el = document) => Array.from(el.querySelectorAll(sel));
 

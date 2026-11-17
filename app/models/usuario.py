@@ -1,4 +1,3 @@
-"""Model Usuario (cliente, administrador e entregador) e Endereco."""
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from ..db import get_db
@@ -37,7 +36,6 @@ class Usuario:
 
     @staticmethod
     def autenticar(email, senha):
-        """Retorna o usuário se e-mail/senha conferem e a conta está ativa; senão None."""
         usuario = Usuario.buscar_por_email(email or "")
         if usuario and usuario["ativo"] and check_password_hash(usuario["senha_hash"], senha or ""):
             return usuario

@@ -1,9 +1,5 @@
-"""Cálculo de frete (regra de negócio RN-HU008).
-
-Cupcakes são perecíveis, por isso a loja só entrega em Curitiba e Região
-Metropolitana (CEPs 80000-000 a 83899-999). Fora dessa faixa, o cliente
-pode escolher a retirada na loja.
-"""
+# so entregamos em Curitiba e regiao metropolitana (cupcake nao aguenta viagem longa)
+# faixa de CEP: 80000-000 ate 83899-999
 from .validacoes import somente_digitos
 
 FRETE_GRATIS_A_PARTIR = 150.00
@@ -19,7 +15,6 @@ class ForaDaAreaDeEntrega(ValueError):
 
 
 def calcular_frete(cep: str, valor_produtos: float) -> dict:
-    """Retorna {'valor', 'prazo_min', 'regiao'} ou lança ForaDaAreaDeEntrega."""
     digitos = somente_digitos(cep)
     if len(digitos) != 8:
         raise ValueError("CEP inválido: informe 8 dígitos.")

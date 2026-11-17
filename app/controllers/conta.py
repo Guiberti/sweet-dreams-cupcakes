@@ -1,4 +1,3 @@
-"""Controller da conta do cliente: perfil e HU-015 (gerenciar endereços)."""
 from flask import Blueprint, flash, g, redirect, render_template, request, url_for
 
 from ..models import Endereco, Usuario

@@ -1,5 +1,4 @@
-"""Controller do administrador: HU-018 (produtos), HU-019 (pedidos), HU-020 (relatórios),
-HU-021 (cupons), HU-022 (atribuir entregador) e laudos de teste."""
+# rotas do painel do administrador
 from flask import Blueprint, abort, flash, g, redirect, render_template, request, url_for
 
 from ..models import (STATUS_ROTULOS, Categoria, Cupom, FeedbackTeste, Pagamento, Pedido, PedidoInvalido,

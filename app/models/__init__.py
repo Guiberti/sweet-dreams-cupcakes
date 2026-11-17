@@ -1,4 +1,3 @@
-"""Camada MODEL do padrão MVC: entidades e regras de persistência."""
 from .cupom import Cupom, CupomInvalido
 from .feedback import FeedbackTeste
 from .pedido import Pagamento, Pedido, PedidoInvalido, STATUS_ROTULOS

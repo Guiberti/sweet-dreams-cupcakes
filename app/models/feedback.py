@@ -1,4 +1,3 @@
-"""Model FeedbackTeste - laudos dos testadores (Situação-Problema 3)."""
 from ..db import get_db
 
 

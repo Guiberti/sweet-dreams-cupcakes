@@ -1,13 +1,5 @@
-"""Gateway de pagamento SIMULADO.
-
-O projeto acadêmico não se integra a um gateway real. Este módulo reproduz
-o comportamento de um gateway (validação, aprovação e recusa) para que o
-fluxo completo do caso de uso CU-010 possa ser executado e testado.
-
-Cartões de teste:
-  * qualquer número válido pelo algoritmo de Luhn  -> APROVADO
-  * número terminado em 0002 (ex.: 4000 0000 0000 0002) -> RECUSADO (saldo insuficiente)
-"""
+# pagamento SIMULADO, nao chama nenhum gateway de verdade
+# cartao valido (luhn) = aprovado / cartao terminado em 0002 = recusado
 import secrets
 from datetime import date
 
@@ -72,7 +64,6 @@ def validar_dados_cartao(numero: str, nome: str, validade: str, cvv: str) -> lis
 
 
 def processar_cartao(numero: str, nome: str, validade: str, cvv: str, valor: float) -> dict:
-    """Simula a autorização. Retorna dict com status APROVADO ou RECUSADO."""
     erros = validar_dados_cartao(numero, nome, validade, cvv)
     if erros:
         raise PagamentoInvalido(" ".join(erros))
@@ -86,7 +77,6 @@ def processar_cartao(numero: str, nome: str, validade: str, cvv: str, valor: flo
 
 
 def gerar_pix(numero_pedido: str, valor: float) -> str:
-    """Gera um código PIX 'copia e cola' fictício (formato ilustrativo)."""
     valor_txt = f"{valor:.2f}"
     return (
         "00020126580014BR.GOV.BCB.PIX0136sweetdreams@pix.com.br"

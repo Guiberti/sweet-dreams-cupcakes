@@ -1,8 +1,3 @@
-"""Regras de validação de entrada (funções puras, sem acesso ao banco).
-
-Ficam separadas dos controllers para poderem ser testadas isoladamente
-(testes unitários em tests/test_validacoes.py).
-"""
 import re
 
 EMAIL_RE = re.compile(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$")
@@ -17,7 +12,6 @@ def validar_email(email: str) -> bool:
 
 
 def validar_senha(senha: str) -> list[str]:
-    """RN-HU001: mínimo de 8 caracteres, com letras e números."""
     erros = []
     senha = senha or ""
     if len(senha) < 8:

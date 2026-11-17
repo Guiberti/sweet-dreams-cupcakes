@@ -1,4 +1,3 @@
-"""Controller de autenticação: HU-001 (cadastro), HU-002 (login) e logout."""
 from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for
 
 from ..models import EmailJaCadastrado, Usuario

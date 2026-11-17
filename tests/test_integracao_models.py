@@ -1,4 +1,4 @@
-"""Testes de INTEGRAÇÃO - Model + banco de dados (transações, estoque, cupom)."""
+# testes de integracao (model + banco)
 import pytest
 
 from app.db import get_db

@@ -1,10 +1,4 @@
-"""Model Pedido, ItemPedido, Pagamento e HistoricoStatus.
-
-Concentra as regras de negócio do pedido:
-  * cálculo de totais (produtos + frete - desconto);
-  * baixa e devolução de estoque;
-  * máquina de estados do status do pedido.
-"""
+# regras do pedido: totais, baixa/devolucao de estoque e mudanca de status
 import secrets
 
 from ..db import get_db
@@ -47,7 +41,6 @@ def transicao_permitida(atual: str, novo: str, tipo_entrega: str = "ENTREGA") ->
 
 
 def calcular_totais(itens: list[dict], frete: float = 0.0, desconto: float = 0.0) -> dict:
-    """Função pura usada no carrinho, no checkout e nos testes."""
     produtos = round(sum(i["preco"] * i["quantidade"] for i in itens), 2)
     desconto = round(min(desconto, produtos), 2)
     total = round(produtos + frete - desconto, 2)
@@ -58,7 +51,7 @@ class Pedido:
     @staticmethod
     def criar(cliente_id: int, itens: list[dict], tipo_entrega: str, endereco_texto: str | None,
               frete: float, cupom_codigo: str | None = None, observacoes: str | None = None) -> int:
-        """Cria o pedido em uma única transação. `itens` = [{'produto_id', 'quantidade'}]."""
+        # tudo numa transacao so: se faltar estoque de um item, nada e gravado
         if not itens:
             raise PedidoInvalido("Seu carrinho está vazio.")
         if tipo_entrega not in ("ENTREGA", "RETIRADA"):

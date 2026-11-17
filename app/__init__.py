@@ -1,11 +1,4 @@
-"""Fábrica da aplicação Flask (Application Factory).
-
-Arquitetura MVC:
-  * Model      -> app/models      (entidades + acesso ao banco)
-  * View       -> app/templates   (HTML/CSS/JS renderizados pelo Jinja2)
-  * Controller -> app/controllers (Blueprints que recebem a requisição HTTP)
-  * Services   -> app/services    (regras de negócio puras: frete, pagamento, validações)
-"""
+# cria o app flask, registra os blueprints e os filtros dos templates
 import os
 from datetime import datetime
 from pathlib import Path

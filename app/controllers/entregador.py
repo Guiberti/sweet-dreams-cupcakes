@@ -1,4 +1,3 @@
-"""Controller do entregador: visualizar pedidos atribuídos e atualizar o status da entrega."""
 from flask import Blueprint, abort, flash, g, redirect, render_template, request, url_for
 
 from ..models import Pedido, PedidoInvalido

@@ -1,4 +1,4 @@
-"""Controller do carrinho: HU-005 (adicionar), HU-006 (gerenciar) e HU-007 (cupom)."""
+# o carrinho fica guardado na sessao (funciona sem login)
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 
 from ..models import Cupom, CupomInvalido, Produto

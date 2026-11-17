@@ -1,5 +1,3 @@
-"""Controller de pedidos: HU-008 (frete), HU-009 (finalizar), HU-010/011 (pagamento),
-HU-012 (acompanhar) e HU-013 (histórico)."""
 from flask import Blueprint, abort, flash, g, redirect, render_template, request, session, url_for
 
 from ..models import Cupom, CupomInvalido, Endereco, Pagamento, Pedido, PedidoInvalido
@@ -110,7 +108,7 @@ def pagamento(pedido_id):
 @bp.route("/pedido/<int:pedido_id>/pix/confirmar", methods=["POST"])
 @login_obrigatorio()
 def confirmar_pix(pedido_id):
-    """Simula o webhook do banco avisando que o PIX foi pago (ambiente de demonstração)."""
+    # simula o aviso do banco de que o pix caiu (so pra demonstracao)
     pedido = _pedido_do_cliente(pedido_id)
     pix = Pagamento.ultimo(pedido_id)
     if pedido["status"] == "AGUARDANDO_PAGAMENTO" and pix and pix["forma"] == "PIX" and pix["status"] == "PENDENTE":

@@ -1,4 +1,4 @@
-"""Testes de SISTEMA - fluxos completos pelas rotas HTTP (front-end + back-end + banco)."""
+# testes de sistema: fluxos completos pelas rotas
 from conftest import login
 
 

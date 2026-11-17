@@ -1,4 +1,4 @@
-"""Testes UNITÁRIOS - totais, cupom e máquina de estados do pedido."""
+# testes unitarios: totais, cupom e status do pedido
 from datetime import date
 
 import pytest

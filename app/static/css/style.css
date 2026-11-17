@@ -1,5 +1,4 @@
-/* Sweet Dreams Cupcakes - identidade visual do PIT I: fundo escuro, rosa gourmet, cantos arredondados.
-   Mobile-first; contraste mínimo WCAG 2.1 AA; alvos de toque >= 44px; espaçamento em múltiplos de 8px. */
+/* cores seguem a identidade do PIT I (fundo escuro + rosa) */
 :root {
   --rosa: #FF85C0; --rosa-escuro: #E86AA6; --fundo: #121212; --superficie: #1E1E1E; --superficie-2: #2A2A2A;
   --borda: #3A3A3A; --texto: #F5F5F5; --muted: #B5B5B5; --sucesso: #5BD08A; --erro: #FF6B6B; --aviso: #FFC857;
@@ -177,7 +176,7 @@ input[type=color] { padding: 4px; }
 .laudo .print { max-width: 100%; max-height: 320px; border-radius: 8px; margin-top: 8px; }
 @media (max-width: 480px) { .kpis { grid-template-columns: 1fr; } .duas-colunas { grid-template-columns: 1fr; } }
 
-/* Impressão (ex.: Laudos de teste → Ctrl+P → Salvar como PDF) */
+/* impressao: usado pra salvar a pagina de laudos em PDF */
 @media print {
   :root { --fundo: #fff; --superficie: #fff; --superficie-2: #f3f3f3; --texto: #111; --muted: #555; --borda: #ccc; }
   .topo, .subnav, .nav-inferior, .rodape, .mensagens, .btn, form button { display: none !important; }

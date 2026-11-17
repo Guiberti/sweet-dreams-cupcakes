@@ -1,4 +1,3 @@
-"""Model Cupom de desconto (HU-007 / HU-021)."""
 from datetime import date
 
 from ..db import get_db
@@ -11,7 +10,6 @@ class CupomInvalido(ValueError):
 class Cupom:
     @staticmethod
     def calcular_desconto(tipo: str, valor: float, valor_produtos: float) -> float:
-        """Regra pura: o desconto nunca ultrapassa o valor dos produtos."""
         if tipo == "PERCENTUAL":
             desconto = valor_produtos * valor / 100
         else:
@@ -20,7 +18,6 @@ class Cupom:
 
     @staticmethod
     def validar(codigo: str, valor_produtos: float, hoje: date | None = None):
-        """Retorna (cupom, desconto) ou lança CupomInvalido com a mensagem para o cliente."""
         hoje = hoje or date.today()
         codigo = (codigo or "").strip().upper()
         if not codigo:

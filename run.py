@@ -1,9 +1,4 @@
-"""Ponto de entrada: `python run.py`
-
-Sobe o servidor em http://localhost:5000 e também na rede local
-(http://<IP-do-computador>:5000), para testar pelo celular no mesmo Wi-Fi.
-Na primeira execução o banco SQLite é criado automaticamente em instance/.
-"""
+# python run.py -> abre em localhost:5000 e tambem na rede local (pra testar no celular)
 import socket
 
 from app import create_app

@@ -1,9 +1,4 @@
-"""Controller do formulário de laudo de teste (Situação-Problema 3).
-
-Os 5 testadores acessam /teste, descrevem o que funcionou, o que não
-funcionou, o que não testaram e anexam um print. O administrador consulta
-todos os laudos em /admin/laudos.
-"""
+# formulario de laudo para os testadores (situacao-problema 3)
 import secrets
 from datetime import date
 from pathlib import Path

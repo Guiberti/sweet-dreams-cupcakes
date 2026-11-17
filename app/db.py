@@ -1,9 +1,4 @@
-"""Camada de acesso ao banco (SQLite).
-
-Abre uma conexão por requisição (guardada em flask.g) e oferece os comandos
-para criar o banco a partir de database/schema.sql e popular com os dados
-de demonstração.
-"""
+# conexao com o sqlite + comando `flask init-db`
 import sqlite3
 from pathlib import Path
 
@@ -55,7 +50,6 @@ def init_db(com_dados_demo: bool = True):
 
 @click.command("init-db")
 def init_db_command():
-    """Recria o banco e carrega os dados de demonstração."""
     init_db()
     click.echo("Banco de dados criado com dados de demonstração.")
 

@@ -1,8 +1,4 @@
--- =====================================================================
--- Sweet Dreams Cupcakes - Projeto Físico do Banco de Dados
--- SGBD: SQLite 3 (portável para PostgreSQL/MySQL com ajustes mínimos)
--- Modelo normalizado até a 3ª Forma Normal (3FN)
--- =====================================================================
+-- Sweet Dreams Cupcakes - banco de dados (SQLite)
 
 PRAGMA foreign_keys = ON;
 
@@ -17,9 +13,7 @@ DROP TABLE IF EXISTS categoria;
 DROP TABLE IF EXISTS endereco;
 DROP TABLE IF EXISTS usuario;
 
--- ---------------------------------------------------------------------
 -- USUARIO: clientes, administradores e entregadores (generalização por tipo)
--- ---------------------------------------------------------------------
 CREATE TABLE usuario (
     id             INTEGER PRIMARY KEY AUTOINCREMENT,
     nome           VARCHAR(120) NOT NULL,
@@ -32,9 +26,7 @@ CREATE TABLE usuario (
     data_cadastro  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- ---------------------------------------------------------------------
 -- ENDERECO: um usuário possui 0..N endereços
--- ---------------------------------------------------------------------
 CREATE TABLE endereco (
     id           INTEGER PRIMARY KEY AUTOINCREMENT,
     usuario_id   INTEGER      NOT NULL REFERENCES usuario(id) ON DELETE CASCADE,
@@ -50,9 +42,7 @@ CREATE TABLE endereco (
 );
 CREATE INDEX idx_endereco_usuario ON endereco(usuario_id);
 
--- ---------------------------------------------------------------------
 -- CATEGORIA e PRODUTO: um produto pertence a exatamente uma categoria
--- ---------------------------------------------------------------------
 CREATE TABLE categoria (
     id         INTEGER PRIMARY KEY AUTOINCREMENT,
     nome       VARCHAR(60)  NOT NULL UNIQUE,
@@ -74,9 +64,7 @@ CREATE TABLE produto (
 );
 CREATE INDEX idx_produto_categoria ON produto(categoria_id);
 
--- ---------------------------------------------------------------------
 -- CUPOM de desconto
--- ---------------------------------------------------------------------
 CREATE TABLE cupom (
     id                     INTEGER PRIMARY KEY AUTOINCREMENT,
     codigo                 VARCHAR(30)   NOT NULL UNIQUE,
@@ -88,10 +76,7 @@ CREATE TABLE cupom (
     ativo                  INTEGER       NOT NULL DEFAULT 1 CHECK (ativo IN (0, 1))
 );
 
--- ---------------------------------------------------------------------
 -- PEDIDO: cabeçalho. Endereço é copiado (snapshot) para preservar o
--- histórico mesmo que o cliente altere/exclua o endereço depois.
--- ---------------------------------------------------------------------
 CREATE TABLE pedido (
     id                INTEGER PRIMARY KEY AUTOINCREMENT,
     numero            VARCHAR(20)   NOT NULL UNIQUE,
@@ -114,9 +99,7 @@ CREATE INDEX idx_pedido_cliente    ON pedido(cliente_id);
 CREATE INDEX idx_pedido_entregador ON pedido(entregador_id);
 CREATE INDEX idx_pedido_status     ON pedido(status);
 
--- ---------------------------------------------------------------------
 -- ITEM_PEDIDO: composição com PEDIDO; preço unitário congelado na compra
--- ---------------------------------------------------------------------
 CREATE TABLE item_pedido (
     id              INTEGER PRIMARY KEY AUTOINCREMENT,
     pedido_id       INTEGER       NOT NULL REFERENCES pedido(id) ON DELETE CASCADE,
@@ -126,10 +109,7 @@ CREATE TABLE item_pedido (
     UNIQUE (pedido_id, produto_id)
 );
 
--- ---------------------------------------------------------------------
 -- PAGAMENTO: 1 pedido possui 1..N tentativas de pagamento.
--- Nunca armazenamos o número completo do cartão (PCI-DSS): só os 4 finais.
--- ---------------------------------------------------------------------
 CREATE TABLE pagamento (
     id              INTEGER PRIMARY KEY AUTOINCREMENT,
     pedido_id       INTEGER       NOT NULL REFERENCES pedido(id) ON DELETE CASCADE,
@@ -145,9 +125,7 @@ CREATE TABLE pagamento (
 );
 CREATE INDEX idx_pagamento_pedido ON pagamento(pedido_id);
 
--- ---------------------------------------------------------------------
 -- HISTORICO_STATUS: trilha de auditoria para o rastreamento do pedido
--- ---------------------------------------------------------------------
 CREATE TABLE historico_status (
     id           INTEGER PRIMARY KEY AUTOINCREMENT,
     pedido_id    INTEGER     NOT NULL REFERENCES pedido(id) ON DELETE CASCADE,
@@ -157,9 +135,7 @@ CREATE TABLE historico_status (
 );
 CREATE INDEX idx_historico_pedido ON historico_status(pedido_id);
 
--- ---------------------------------------------------------------------
 -- FEEDBACK_TESTE: laudos dos testadores (Situação-Problema 3)
--- ---------------------------------------------------------------------
 CREATE TABLE feedback_teste (
     id                 INTEGER PRIMARY KEY AUTOINCREMENT,
     nome_testador      VARCHAR(120) NOT NULL,

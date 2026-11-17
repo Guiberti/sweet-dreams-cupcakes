@@ -1,4 +1,4 @@
-"""Testes UNITÁRIOS - regras de validação de cadastro (HU-001)."""
+# testes unitarios das validacoes do cadastro
 import pytest
 
 from app.services.validacoes import (validar_cadastro, validar_cep, validar_email, validar_senha,
