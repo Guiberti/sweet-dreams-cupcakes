@@ -1,5 +1,5 @@
 # o carrinho fica guardado na sessao (funciona sem login)
-from flask import Blueprint, flash, redirect, render_template, request, session, url_for
+from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for
 
 from ..models import Cupom, CupomInvalido, Produto
 from ..models.pedido import calcular_totais
@@ -9,13 +9,17 @@ bp = Blueprint("carrinho", __name__, url_prefix="/carrinho")
 MAX_POR_ITEM = 50
 
 
+def _cliente_id():
+    return g.usuario["id"] if g.get("usuario") else None
+
+
 def _resumo():
     itens = itens_do_carrinho()
     desconto, cupom = 0.0, None
     codigo = session.get("cupom")
     if codigo and itens:
         try:
-            cupom, desconto = Cupom.validar(codigo, calcular_totais(itens)["produtos"])
+            cupom, desconto = Cupom.validar(codigo, calcular_totais(itens)["produtos"], cliente_id=_cliente_id())
         except CupomInvalido as e:
             session.pop("cupom", None)
             flash(f"Cupom removido: {e}", "aviso")
@@ -80,7 +84,7 @@ def aplicar_cupom():
         flash("Adicione produtos antes de aplicar um cupom.", "aviso")
         return redirect(url_for("carrinho.ver"))
     try:
-        cupom, desconto = Cupom.validar(codigo, calcular_totais(itens)["produtos"])
+        cupom, desconto = Cupom.validar(codigo, calcular_totais(itens)["produtos"], cliente_id=_cliente_id())
         session["cupom"] = cupom["codigo"]
         flash(f"Cupom {cupom['codigo']} aplicado: desconto de R$ {desconto:.2f}".replace(".", ","), "sucesso")
     except CupomInvalido as e:
@@ -91,4 +95,5 @@ def aplicar_cupom():
 @bp.route("/cupom/remover", methods=["POST"])
 def remover_cupom():
     session.pop("cupom", None)
+    flash("Cupom removido. O desconto saiu do pedido.", "info")
     return redirect(url_for("carrinho.ver"))

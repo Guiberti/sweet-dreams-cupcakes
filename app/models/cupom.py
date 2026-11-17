@@ -17,7 +17,7 @@ class Cupom:
         return round(min(desconto, valor_produtos), 2)
 
     @staticmethod
-    def validar(codigo: str, valor_produtos: float, hoje: date | None = None):
+    def validar(codigo: str, valor_produtos: float, hoje: date | None = None, cliente_id: int | None = None):
         hoje = hoje or date.today()
         codigo = (codigo or "").strip().upper()
         if not codigo:
@@ -36,6 +36,12 @@ class Cupom:
             raise CupomInvalido(
                 f"Este cupom exige pedido mínimo de R$ {cupom['valor_minimo_pedido']:.2f}".replace(".", ",")
             )
+        if cliente_id:  # cada cliente usa o cupom uma vez so (achado no laudo de teste)
+            ja_usou = get_db().execute(
+                "SELECT 1 FROM pedido WHERE cliente_id = ? AND cupom_id = ? AND status <> 'CANCELADO'",
+                (cliente_id, cupom["id"])).fetchone()
+            if ja_usou:
+                raise CupomInvalido("Você já usou este cupom em outro pedido.")
         return cupom, Cupom.calcular_desconto(cupom["tipo_desconto"], cupom["valor_desconto"], valor_produtos)
 
     @staticmethod

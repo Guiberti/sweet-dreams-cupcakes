@@ -36,7 +36,7 @@ def checkout():
     desconto, cupom_codigo = 0.0, session.get("cupom")
     if cupom_codigo:
         try:
-            _, desconto = Cupom.validar(cupom_codigo, produtos)
+            _, desconto = Cupom.validar(cupom_codigo, produtos, cliente_id=g.usuario["id"])
         except CupomInvalido:
             cupom_codigo = None
             session.pop("cupom", None)
@@ -136,7 +136,11 @@ def cancelar(pedido_id):
         flash("Este pedido já está em preparo e não pode mais ser cancelado pelo app.", "erro")
     else:
         Pedido.atualizar_status(pedido_id, "CANCELADO", g.usuario["id"])
-        flash("Pedido cancelado.", "info")
+        pag = Pagamento.ultimo(pedido_id)
+        if pag and pag["status"] == "APROVADO":
+            flash("Pedido cancelado. O valor pago será estornado em até 7 dias úteis.", "info")
+        else:
+            flash("Pedido cancelado.", "info")
     return redirect(url_for("pedidos.acompanhar", pedido_id=pedido_id))
 
 

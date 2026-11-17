@@ -42,7 +42,7 @@
   <h2>{{ 'Entrega' if pedido.tipo_entrega == 'ENTREGA' else 'Retirada na loja' }}</h2>
   <p>{{ pedido.endereco_entrega or 'Rua das Flores, 500 - Centro, Curitiba/PR' }}</p>
   {% if pedido.entregador_nome %}<p>🛵 Entregador: <b>{{ pedido.entregador_nome }}</b></p>{% endif %}
-  {% if pagamento %}<p>Pagamento: {{ 'Cartão ' ~ pagamento.bandeira ~ ' final ' ~ pagamento.cartao_final if pagamento.forma == 'CARTAO' else 'PIX' }} · {{ pagamento.status|lower }}</p>{% endif %}
+  {% if pagamento %}<p>Pagamento: {{ 'Cartão ' ~ pagamento.bandeira ~ ' final ' ~ pagamento.cartao_final if pagamento.forma == 'CARTAO' else 'PIX' }} · {{ 'estorno solicitado (até 7 dias úteis)' if pedido.status == 'CANCELADO' and pagamento.status == 'APROVADO' else pagamento.status|lower }}</p>{% endif %}
   {% if pedido.observacoes %}<p>Obs.: {{ pedido.observacoes }}</p>{% endif %}
 </section>
 {% if pedido.status in ('AGUARDANDO_PAGAMENTO', 'CONFIRMADO') %}

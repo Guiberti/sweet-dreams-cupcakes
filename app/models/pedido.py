@@ -75,7 +75,7 @@ class Pedido:
             cupom_id, desconto = None, 0.0
             parcial = calcular_totais(linhas)
             if cupom_codigo:
-                cupom, desconto = Cupom.validar(cupom_codigo, parcial["produtos"])
+                cupom, desconto = Cupom.validar(cupom_codigo, parcial["produtos"], cliente_id=cliente_id)
                 cupom_id = cupom["id"]
             if tipo_entrega == "RETIRADA":
                 frete = 0.0

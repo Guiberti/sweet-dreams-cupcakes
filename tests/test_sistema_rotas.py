@@ -189,3 +189,32 @@ def test_data_mostrada_no_horario_de_brasilia(app):
     formatar = app.jinja_env.filters["data"]
     assert formatar("2026-11-17 02:03:00") == "16/11/2026 23:03"  # banco guarda em UTC
     assert formatar("2026-11-17", "%d/%m/%Y") == "17/11/2026"     # data sem hora nao muda
+
+
+# ---------------------------- melhorias do laudo do Matheus ----------------------------
+def test_cupom_so_pode_ser_usado_uma_vez_por_cliente(cliente_logado):
+    cliente_logado.post("/carrinho/adicionar/1")
+    cliente_logado.post("/carrinho/cupom", data={"codigo": "BEMVINDO10"})
+    cliente_logado.post("/checkout", data={"tipo_entrega": "RETIRADA"})
+    cliente_logado.post("/carrinho/adicionar/2")
+    r = cliente_logado.post("/carrinho/cupom", data={"codigo": "BEMVINDO10"}, follow_redirects=True)
+    assert "já usou este cupom" in texto(r)
+
+
+def test_novo_endereco_volta_selecionado_e_avisa_fora_da_area(cliente_logado):
+    cliente_logado.post("/carrinho/adicionar/1")
+    dados = {"cep": "01310100", "logradouro": "Av Paulista", "numero": "1", "bairro": "Bela Vista",
+             "cidade": "São Paulo", "uf": "SP"}
+    r = cliente_logado.post("/conta/enderecos/novo?voltar=checkout", data=dados)
+    assert "endereco_id=2" in r.headers["Location"]
+    t = texto(cliente_logado.get(r.headers["Location"]))
+    assert "ainda não entregamos neste CEP" in t
+
+
+def test_cancelar_pedido_pago_avisa_estorno(cliente_logado):
+    url = _comprar(cliente_logado, 1)
+    cliente_logado.post(url, data={"forma": "PIX"})
+    pid = url.split("/")[2]
+    cliente_logado.post(f"/pedido/{pid}/pix/confirmar")
+    r = cliente_logado.post(f"/pedido/{pid}/cancelar", follow_redirects=True)
+    assert "estornado" in texto(r) and "estorno solicitado" in texto(r)

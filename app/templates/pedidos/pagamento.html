@@ -21,10 +21,15 @@
 </section>
 {% endif %}
 
+{% if pix %}
+<details class="caixa">
+  <summary>Prefiro pagar com cartão</summary>
+{% else %}
 <div class="abas" role="tablist">
   <button class="aba ativa" role="tab" data-aba="aba-cartao" aria-selected="true">💳 Cartão de crédito</button>
   <button class="aba" role="tab" data-aba="aba-pix" aria-selected="false">⚡ PIX</button>
 </div>
+{% endif %}
 
 <form method="post" id="aba-cartao" class="caixa formulario painel-aba" novalidate autocomplete="off">
   <input type="hidden" name="forma" value="CARTAO">
@@ -40,11 +45,13 @@
   <button class="btn btn-primario bloco">Pagar {{ pedido.valor_total|moeda }}</button>
 </form>
 
+{% if pix %}</details>{% else %}
 <form method="post" id="aba-pix" class="caixa painel-aba" hidden>
   <input type="hidden" name="forma" value="PIX">
   <p>Gere um código PIX e pague pelo app do seu banco. A confirmação é imediata.</p>
   <button class="btn btn-primario bloco">Gerar código PIX</button>
 </form>
+{% endif %}
 
 <form method="post" action="{{ url_for('pedidos.cancelar', pedido_id=pedido.id) }}" class="centro" data-confirmar="Deseja cancelar este pedido?">
   <button class="link-perigo">Cancelar pedido</button>

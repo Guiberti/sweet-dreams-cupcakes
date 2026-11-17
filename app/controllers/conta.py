@@ -1,6 +1,7 @@
 from flask import Blueprint, flash, g, redirect, render_template, request, url_for
 
 from ..models import Endereco, Usuario
+from ..services.frete import ForaDaAreaDeEntrega, calcular_frete
 from ..services.validacoes import validar_telefone
 from .helpers import login_obrigatorio
 
@@ -30,10 +31,15 @@ def novo_endereco():
     if request.method == "POST":
         erros = Endereco.validar(dados)
         if not erros:
-            Endereco.criar(g.usuario["id"], dados)
+            novo_id = Endereco.criar(g.usuario["id"], dados)
             flash("Endereço salvo.", "sucesso")
-            destino = request.args.get("voltar")
-            return redirect(url_for("pedidos.checkout") if destino == "checkout" else url_for("conta.perfil"))
+            try:
+                calcular_frete(dados.get("cep"), 0)
+            except ForaDaAreaDeEntrega:
+                flash("Atenção: ainda não entregamos neste CEP. Para ele, só a retirada na loja.", "aviso")
+            if request.args.get("voltar") == "checkout":  # ja volta com o endereco novo marcado
+                return redirect(url_for("pedidos.checkout", endereco_id=novo_id))
+            return redirect(url_for("conta.perfil"))
         for e in erros:
             flash(e, "erro")
     return render_template("conta/endereco_form.html", dados=dados)
