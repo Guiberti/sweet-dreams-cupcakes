@@ -167,6 +167,14 @@ def test_formulario_de_laudo(client, admin_logado):
     assert "Pedro Alves" in texto(client.get("/admin/laudos"))
 
 
+def test_admin_exclui_laudo(client):
+    client.post("/teste/", data={"nome_testador": "Teste Brincadeira", "data_teste": "2026-11-17", "funcionou": "x"})
+    login(client, "admin@sweetdreams.com", "Admin@123")
+    assert "Teste Brincadeira" in texto(client.get("/admin/laudos"))
+    r = client.post("/admin/laudos/1/excluir", follow_redirects=True)
+    assert "Laudo excluído" in texto(r) and "Teste Brincadeira" not in texto(r)
+
+
 def test_formulario_de_laudo_vazio(client):
     assert "Informe seu nome" in texto(client.post("/teste/", data={}))
 

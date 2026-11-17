@@ -2,13 +2,13 @@
 
 ## Testes automatizados
 
-São 105 testes e todos passam.
+São 106 testes e todos passam.
 
 Testes do servidor (`python -m pytest tests --ignore=tests/e2e`):
 
 - 53 unitários (validações, frete, pagamento, cálculo do total, cupom, status do pedido)
 - 10 de integração (model + banco: estoque, transação, cupom)
-- 22 de sistema (fluxos completos pelas rotas: cadastro, compra, admin, entregador)
+- 23 de sistema (fluxos completos pelas rotas: cadastro, compra, admin, entregador)
 
 Testes de interface no navegador (`tests/e2e`): 20 testes que abrem o Chrome de verdade, em tamanho de celular, e usam o site como uma pessoa usaria. Eles testam também o JavaScript da tela (máscaras, botões + e -, abas de pagamento, confirmação antes de cancelar), entradas erradas (cadastro vazio, CEP com letras, quantidade negativa, cupons inválidos), as permissões e se nenhuma página fica mais larga que a tela do celular. Cada teste salva um print em [`e2e/`](e2e/).
 
@@ -66,6 +66,7 @@ Para rodar os de interface: `pip install -r requirements-dev.txt`, `playwright i
 - `test_sistema_rotas.py::test_admin_produto_invalido`
 - `test_sistema_rotas.py::test_fluxo_admin_entregador_completo`
 - `test_sistema_rotas.py::test_formulario_de_laudo`
+- `test_sistema_rotas.py::test_admin_exclui_laudo`
 - `test_sistema_rotas.py::test_formulario_de_laudo_vazio`
 - `test_sistema_rotas.py::test_data_mostrada_no_horario_de_brasilia`
 - `test_unit_frete_pagamento.py::test_frete_curitiba`

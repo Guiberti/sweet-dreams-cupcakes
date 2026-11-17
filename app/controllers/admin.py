@@ -129,3 +129,12 @@ def cupom_alternar(cupom_id):
 @login_obrigatorio("ADMIN")
 def laudos():
     return render_template("admin/laudos.html", laudos=FeedbackTeste.listar())
+
+
+@bp.route("/laudos/<int:laudo_id>/excluir", methods=["POST"])
+@login_obrigatorio("ADMIN")
+def laudo_excluir(laudo_id):
+    # para descartar laudo de brincadeira ou incompleto
+    FeedbackTeste.excluir(laudo_id)
+    flash("Laudo excluído.", "info")
+    return redirect(url_for("admin.laudos"))

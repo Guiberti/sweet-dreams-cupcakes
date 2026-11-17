@@ -31,3 +31,9 @@ class FeedbackTeste:
     @staticmethod
     def listar():
         return get_db().execute("SELECT * FROM feedback_teste ORDER BY id").fetchall()
+
+    @staticmethod
+    def excluir(laudo_id):
+        db = get_db()
+        db.execute("DELETE FROM feedback_teste WHERE id = ?", (laudo_id,))
+        db.commit()

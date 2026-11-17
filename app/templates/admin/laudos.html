@@ -13,6 +13,7 @@
     <dt>⏭️ Não testado</dt><dd>{{ l.nao_testado or '-' }}</dd>
     <dt>💡 Sugestões</dt><dd>{{ l.sugestoes or '-' }}</dd>
   </dl>
+  <form method="post" action="{{ url_for('admin.laudo_excluir', laudo_id=l.id) }}" data-confirmar="Excluir o laudo de {{ l.nome_testador }}?"><button class="link-perigo">Excluir laudo</button></form>
   {% if l.print_arquivo %}<a href="{{ url_for('static', filename='uploads/' ~ l.print_arquivo) }}" target="_blank"><img class="print" src="{{ url_for('static', filename='uploads/' ~ l.print_arquivo) }}" alt="Print enviado por {{ l.nome_testador }}"></a>{% endif %}
 </article>
 {% else %}

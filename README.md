@@ -50,7 +50,7 @@ O pagamento é simulado: não existe cobrança de verdade.
 python -m pytest tests --ignore=tests/e2e -v
 ```
 
-São 85 testes do servidor (unitários, de integração e de sistema) e mais 20 testes de interface que abrem o navegador. Para rodar os de interface:
+São 86 testes do servidor (unitários, de integração e de sistema) e mais 20 testes de interface que abrem o navegador. Para rodar os de interface:
 
 ```bash
 pip install -r requirements-dev.txt
