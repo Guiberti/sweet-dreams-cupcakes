@@ -191,3 +191,7 @@ Recebi 5 laudos. O PDF com todos eles e os prints está em [laudos-testadores.pd
 | Yago | Botão de confirmar o PIX visível sem rolar | Botão logo abaixo do QR Code |
 
 O laudo do Yago foi feito depois das correções do Matheus e confirmou que elas funcionaram (endereço selecionado, cupom bloqueado no segundo pedido, aviso de estorno).
+
+## Vídeo
+
+Apresentação do sistema funcionando: https://youtu.be/0dnbPPl65Ds

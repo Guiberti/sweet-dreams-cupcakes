@@ -6,6 +6,8 @@ Aluno: Guilherme Dudu Berti - RGM 48103373
 
 É a continuação do que planejei no PIT I (histórias de usuário, UML e protótipos). O cliente vê o cardápio, monta o carrinho, usa cupom, calcula o frete pelo CEP, paga com cartão ou PIX e acompanha o pedido. Também tem um painel para o administrador e uma tela para o entregador.
 
+**Vídeo de apresentação:** https://youtu.be/0dnbPPl65Ds
+
 ![Tela inicial](docs/screenshots/01_home.png)
 
 ## Tecnologias
