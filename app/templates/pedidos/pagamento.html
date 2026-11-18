@@ -11,13 +11,13 @@
 <section class="caixa pix">
   <h2>Pague com PIX</h2>
   <div class="qr" aria-hidden="true"></div>
-  <label for="pix-codigo">PIX copia e cola</label>
-  <textarea id="pix-codigo" readonly rows="3">{{ pix.pix_copia_cola }}</textarea>
-  <button type="button" class="btn bloco" data-copiar="pix-codigo">Copiar código</button>
-  <p class="muted">Após o pagamento, a confirmação é automática. <br><small>(Ambiente de demonstração: use o botão abaixo para simular o aviso do banco.)</small></p>
   <form method="post" action="{{ url_for('pedidos.confirmar_pix', pedido_id=pedido.id) }}">
     <button class="btn btn-primario bloco">Simular pagamento PIX recebido</button>
   </form>
+  <p class="muted"><small>Ambiente de demonstração: o botão acima simula o aviso do banco de que o PIX foi pago.</small></p>
+  <label for="pix-codigo">PIX copia e cola</label>
+  <textarea id="pix-codigo" readonly rows="2">{{ pix.pix_copia_cola }}</textarea>
+  <button type="button" class="btn bloco" data-copiar="pix-codigo">Copiar código</button>
 </section>
 {% endif %}
 

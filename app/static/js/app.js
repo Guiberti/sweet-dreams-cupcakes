@@ -62,6 +62,32 @@
     }, { passive: true });
   }
 
+  // endereco: avisa na hora se o CEP e fora da area e tenta preencher rua/bairro/cidade pelo ViaCEP
+  // (pedido em dois laudos). se nao tiver internet ou o ViaCEP falhar, o usuario so preenche na mao
+  const cep = document.getElementById("cep");
+  const avisoCep = document.getElementById("aviso-cep");
+  if (cep && avisoCep) {
+    cep.addEventListener("input", async () => {
+      const d = cep.value.replace(/\D/g, "");
+      avisoCep.textContent = ""; avisoCep.className = "aviso-cep";
+      if (d.length !== 8) return;
+      const n = parseInt(d, 10);
+      if (n >= 80000000 && n <= 83899999) { avisoCep.textContent = "✓ Entregamos nesse CEP."; avisoCep.classList.add("ok"); }
+      else { avisoCep.textContent = "Atenção: ainda não entregamos nesse CEP, só retirada na loja."; avisoCep.classList.add("erro"); }
+      try {
+        const r = await fetch(`https://viacep.com.br/ws/${d}/json/`);
+        const e = await r.json();
+        if (e.erro) return;
+        const preencher = (id, v) => { const el = document.getElementById(id); if (el && v && !el.value.trim()) el.value = v; };
+        ["logradouro", "bairro"].forEach((c) => preencher(c, e[c]));
+        const cid = document.getElementById("cidade"), uf = document.getElementById("uf");
+        if (e.localidade) cid.value = e.localidade;
+        if (e.uf) uf.value = e.uf;
+        document.getElementById("numero").focus();
+      } catch (_) { /* sem internet: segue manual */ }
+    });
+  }
+
   // Máscaras de entrada
   const mascaras = {
     telefone: (v) => v.replace(/\D/g, "").slice(0, 11).replace(/^(\d{2})(\d)/, "($1) $2").replace(/(\d)(\d{4})$/, "$1-$2"),

@@ -8,6 +8,7 @@
   <label for="cep">CEP *</label>
   <input id="cep" name="cep" inputmode="numeric" placeholder="00000-000" data-mascara="cep" required value="{{ dados.get('cep', '') }}">
   <small class="ajuda">Entregamos em Curitiba e Região Metropolitana (CEPs 80000-000 a 83899-999).</small>
+  <p id="aviso-cep" class="aviso-cep" aria-live="polite"></p>
   <label for="logradouro">Rua *</label>
   <input id="logradouro" name="logradouro" required value="{{ dados.get('logradouro', '') }}">
   <div class="duas-colunas">

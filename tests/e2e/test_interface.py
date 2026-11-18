@@ -257,3 +257,23 @@ def test_sem_rolagem_horizontal_no_celular(page, rota):
     page.goto(rota)
     largura = page.evaluate("document.documentElement.scrollWidth")
     assert largura <= CELULAR["width"], f"{rota} tem {largura}px de largura"
+
+
+# ------------------------------------------------------------------ ajustes do laudo do Yago
+def test_botao_mais_nao_cobre_o_nome_do_produto(page):
+    page.goto("/")
+    card = page.locator(".card-produto").first
+    botao = card.locator(".btn-mais").bounding_box()
+    nome = card.locator("h2").bounding_box()
+    sobrepoe = not (botao["y"] + botao["height"] <= nome["y"] or botao["x"] + botao["width"] <= nome["x"])
+    assert not sobrepoe
+
+
+def test_aviso_de_cep_aparece_enquanto_digita(page):
+    entrar(page)
+    page.goto("/conta/enderecos/novo")
+    page.type("#cep", "01310100")
+    ver(page, "ainda não entregamos nesse CEP")
+    page.fill("#cep", "")
+    page.type("#cep", "80010000")
+    ver(page, "Entregamos nesse CEP")

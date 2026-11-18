@@ -2,15 +2,15 @@
 
 ## Testes automatizados
 
-São 106 testes e todos passam.
+São 113 testes e todos passam.
 
 Testes do servidor (`python -m pytest tests --ignore=tests/e2e`):
 
 - 53 unitários (validações, frete, pagamento, cálculo do total, cupom, status do pedido)
 - 10 de integração (model + banco: estoque, transação, cupom)
-- 23 de sistema (fluxos completos pelas rotas: cadastro, compra, admin, entregador)
+- 28 de sistema (fluxos completos pelas rotas: cadastro, compra, admin, entregador)
 
-Testes de interface no navegador (`tests/e2e`): 20 testes que abrem o Chrome de verdade, em tamanho de celular, e usam o site como uma pessoa usaria. Eles testam também o JavaScript da tela (máscaras, botões + e -, abas de pagamento, confirmação antes de cancelar), entradas erradas (cadastro vazio, CEP com letras, quantidade negativa, cupons inválidos), as permissões e se nenhuma página fica mais larga que a tela do celular. Cada teste salva um print em [`e2e/`](e2e/).
+Testes de interface no navegador (`tests/e2e`): 22 testes que abrem o Chrome de verdade, em tamanho de celular, e usam o site como uma pessoa usaria. Eles testam também o JavaScript da tela (máscaras, botões + e -, abas de pagamento, confirmação antes de cancelar), entradas erradas (cadastro vazio, CEP com letras, quantidade negativa, cupons inválidos), as permissões e se nenhuma página fica mais larga que a tela do celular. Cada teste salva um print em [`e2e/`](e2e/).
 
 Para rodar os de interface: `pip install -r requirements-dev.txt`, `playwright install chromium` e `python -m pytest tests/e2e -v`.
 
@@ -36,6 +36,8 @@ Para rodar os de interface: `pip install -r requirements-dev.txt`, `playwright i
 - `test_interface.py::test_sem_rolagem_horizontal_no_celular[/login]`
 - `test_interface.py::test_sem_rolagem_horizontal_no_celular[/cadastro]`
 - `test_interface.py::test_sem_rolagem_horizontal_no_celular[/teste/]`
+- `test_interface.py::test_botao_mais_nao_cobre_o_nome_do_produto`
+- `test_interface.py::test_aviso_de_cep_aparece_enquanto_digita`
 - `test_integracao_models.py::test_usuario_senha_guardada_com_hash`
 - `test_integracao_models.py::test_email_duplicado`
 - `test_integracao_models.py::test_criar_pedido_baixa_estoque_e_calcula_total`
@@ -48,6 +50,7 @@ Para rodar os de interface: `pip install -r requirements-dev.txt`, `playwright i
 - `test_integracao_models.py::test_entregador_so_em_pedido_pago`
 - `test_sistema_rotas.py::test_home_lista_produtos`
 - `test_sistema_rotas.py::test_busca_e_filtro`
+- `test_sistema_rotas.py::test_busca_com_filtro_errado_mostra_outras_categorias`
 - `test_sistema_rotas.py::test_produto_inexistente_404`
 - `test_sistema_rotas.py::test_cadastro_com_erros_mostra_mensagens`
 - `test_sistema_rotas.py::test_cadastro_e_login`
@@ -69,6 +72,10 @@ Para rodar os de interface: `pip install -r requirements-dev.txt`, `playwright i
 - `test_sistema_rotas.py::test_admin_exclui_laudo`
 - `test_sistema_rotas.py::test_formulario_de_laudo_vazio`
 - `test_sistema_rotas.py::test_data_mostrada_no_horario_de_brasilia`
+- `test_sistema_rotas.py::test_cupom_so_pode_ser_usado_uma_vez_por_cliente`
+- `test_sistema_rotas.py::test_novo_endereco_volta_selecionado_e_avisa_fora_da_area`
+- `test_sistema_rotas.py::test_cancelar_pedido_pago_avisa_estorno`
+- `test_sistema_rotas.py::test_carrinho_mostra_quanto_falta_para_frete_gratis`
 - `test_unit_frete_pagamento.py::test_frete_curitiba`
 - `test_unit_frete_pagamento.py::test_frete_regiao_metropolitana`
 - `test_unit_frete_pagamento.py::test_frete_gratis_acima_de_150`
@@ -155,16 +162,32 @@ Roteiro passado para os testadores:
 
 ### Resultados
 
-| # | Testador | Data | O que funcionou | O que não funcionou | Não testou | Nota |
-|---|---|---|---|---|---|---|
-| 1 | | | | | | |
-| 2 | | | | | | |
-| 3 | | | | | | |
-| 4 | | | | | | |
-| 5 | | | | | | |
+Recebi 5 laudos. O PDF com todos eles e os prints está em [laudos-testadores.pdf](laudos-testadores.pdf).
 
-Os laudos completos, com os prints, estão em `laudos-testadores.pdf`.
+| # | Testador | Perfil | Data | Resumo | Nota |
+|---|---|---|---|---|---|
+| 1 | André Dudu Berti | irmão | 16/11 | Testou produtos, cupons, compra, e-mail repetido e CEP. Não achou problemas. | 4/5 |
+| 2 | Marcio | (não informado) | 17/11 | Buscou "pistache" com o filtro Veganos ligado e não encontrou nada; achou que era erro. Não finalizou a compra. | 4/5 |
+| 3 | Matheus Gonçalves | desenvolvedor | 17/11 | Fluxo completo funcionou. Achou 5 problemas: endereço novo não vinha selecionado, endereço fora da área salvo sem aviso, cupom de boas-vindas usado duas vezes, cancelamento de pedido pago sem estorno e falta de favicon. | 4/5 |
+| 4 | Guylherme Somnezi | desenvolvedor | 17/11 | Categorias, esgotado e frete grátis funcionaram. Achou que a barra de baixo ocupa espaço em telas pequenas. | 4/5 |
+| 5 | Yago Rosa | barbeiro (usuário final) | 17/11 | Testou depois das correções e confirmou que elas funcionaram. Achou o botão "+" cobrindo o nome dos cupcakes no celular. | 4/5 |
 
 ### O que mudei depois dos testes
 
--
+| Laudo | Problema ou sugestão | O que fiz |
+|---|---|---|
+| Marcio | Busca com filtro de categoria não achava nada | O app avisa e mostra o resultado das outras categorias |
+| Matheus | Endereço novo não vinha selecionado no checkout | Volta para o checkout com o endereço novo marcado |
+| Matheus | Endereço fora da área salvo sem aviso | Avisa ao salvar e também enquanto digita o CEP |
+| Matheus | Cupom BEMVINDO10 funcionou duas vezes | Cada cliente usa o cupom uma vez |
+| Matheus | Pedido pago cancelado continuava "aprovado" | Mostra "estorno solicitado (até 7 dias úteis)" |
+| Matheus | Sem favicon | Coloquei o ícone de cupcake |
+| Matheus | Esconder o cartão depois de gerar o PIX / avisar ao remover cupom / mostrar frete no carrinho / "+" maior | Feito |
+| Guylherme | Mostrar quanto falta para o frete grátis | "Faltam R$ X para ganhar frete grátis" no carrinho |
+| Guylherme | Barra de baixo ocupa espaço | Ela some ao rolar para baixo e volta ao rolar para cima |
+| Guylherme | Botão de adicionar direto no card | Já existia (o "+"), mas estava discreto; ficou maior |
+| Yago | Botão "+" cobrindo o nome no celular | Erro que eu mesmo criei ao aumentar o botão. Mudei ele para o canto da imagem e criei um teste que confere que ele não cobre o nome |
+| Matheus e Yago | Preencher rua e bairro pelo CEP | O formulário busca o endereço no ViaCEP quando o CEP é digitado (se não houver internet, preenche à mão) |
+| Yago | Botão de confirmar o PIX visível sem rolar | Botão logo abaixo do QR Code |
+
+O laudo do Yago foi feito depois das correções do Matheus e confirmou que elas funcionaram (endereço selecionado, cupom bloqueado no segundo pedido, aviso de estorno).
